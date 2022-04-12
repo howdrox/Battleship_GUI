@@ -32,9 +32,6 @@ def main():
 
     # Boucle principale
     while running:
-        # Actualisation continue de l'écran:
-        pygame.display.flip()
-
         # On prend tout ce qui se passe sur l'écran
         for event in pygame.event.get():
             if event.type == pygame.MOUSEMOTION:
@@ -44,6 +41,9 @@ def main():
             if event.type == pygame.QUIT:
                 # change the value to False, to exit the main loop
                 running = False
+
+        # Actualisation continue de l'écran:
+        pygame.display.update()
 
 
 # run the main function only if this module is executed as the main script
