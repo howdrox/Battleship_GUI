@@ -1,4 +1,4 @@
-"""play_1v1.py: Multiplayer battleship game 1v1"""
+"""play_friend.py: Multiplayer battleship game 1v1"""
 
 
 import pygame
@@ -11,7 +11,7 @@ def play_friend(surf):
 def main():
     pygame.init()
 
-    size = width, height = 1500, 700
+    size = 1500, 700
 
     # screen
     screen = pygame.display.set_mode(size)
