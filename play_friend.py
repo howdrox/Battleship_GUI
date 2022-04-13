@@ -4,25 +4,9 @@
 import pygame
 
 
-def play_friend(surf):
-    pass
-
-
-def main():
-    pygame.init()
-
-    size = 1500, 700
-
-    # screen
-    screen = pygame.display.set_mode(size)
-
+def loop(screen):
     # background
     background = pygame.image.load("./img/background2.jpg")
-
-    # title and caption
-    pygame.display.set_caption("Battleship")
-    icon = pygame.image.load("./img/icon.png")
-    pygame.display.set_icon(icon)
 
     # grid
     grid = pygame.image.load("./img/grid_white.png")
@@ -56,10 +40,26 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+                pygame.quit()
 
         pygame.display.update()
 
-    pygame.quit()
+
+# sets up the display for solo testing
+# main menu is supposed to call the loop() function when the Play Against a Friend button is pressed
+def main():
+    pygame.init()
+
+    # screen
+    size = 1500, 700
+    screen = pygame.display.set_mode(size)
+
+    # title and caption
+    pygame.display.set_caption("Battleship")
+    icon = pygame.image.load("./img/icon.png")
+    pygame.display.set_icon(icon)
+
+    loop(screen)
 
 
 if __name__ == "__main__":
