@@ -8,13 +8,23 @@ def loop(screen):
     # background
     background = pygame.image.load("./img/background2.jpg")
 
-    # grid
-    grid = pygame.image.load("./img/grid_white.png")
-    rect = grid.get_rect()
-    print(rect.x)
+    # grids (599 x 599)
+    grid_img = pygame.image.load("./img/grid_white.png")
 
-    # parchment
-    parchment = pygame.image.load("./img/parchment.png")
+    grid_p1 = grid_img.get_rect()
+    grid_p1.center = 440, 370
+
+    grid_p2 = grid_img.get_rect()
+    grid_p2.center = 1070, 370
+
+    # parchments (122 x 590)
+    parchment_img = pygame.image.load("./img/parchment.png")
+
+    parchment_p1 = parchment_img.get_rect()
+    parchment_p1.center = 71, 365
+
+    parchment_p2 = parchment_img.get_rect()
+    parchment_p2.center = 1436, 365
 
     # font
     font = pygame.font.Font("freesansbold.ttf", 32)
@@ -27,12 +37,12 @@ def loop(screen):
         screen.blit(background, (0, 0))
 
         # puts grids and parchment for player 1
-        screen.blit(grid, (140, 70))
-        screen.blit(parchment, (10, 70))
+        screen.blit(grid_img, grid_p1)
+        screen.blit(parchment_img, parchment_p1)
 
         # puts grids and parchment for player 2
-        screen.blit(grid, (770, 70))
-        screen.blit(parchment, (1375, 70))
+        screen.blit(grid_img, grid_p2)
+        screen.blit(parchment_img, parchment_p2)
 
         # add player 1 and player 2 text
         screen.blit(player1_text, (313, 20))
