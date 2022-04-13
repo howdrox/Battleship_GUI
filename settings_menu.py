@@ -28,7 +28,6 @@ def loop(screen):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-                pygame.quit()
 
         pygame.display.update()
 
@@ -48,6 +47,7 @@ def main():
     pygame.display.set_icon(icon)
 
     loop(screen)
+    pygame.quit()
 
 
 if __name__ == "__main__":

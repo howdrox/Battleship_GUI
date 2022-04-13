@@ -10,6 +10,8 @@ def loop(screen):
 
     # grid
     grid = pygame.image.load("./img/grid_white.png")
+    rect = grid.get_rect()
+    print(rect.x)
 
     # parchment
     parchment = pygame.image.load("./img/parchment.png")
@@ -40,7 +42,6 @@ def loop(screen):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-                pygame.quit()
 
         pygame.display.update()
 
@@ -60,6 +61,7 @@ def main():
     pygame.display.set_icon(icon)
 
     loop(screen)
+    pygame.quit()
 
 
 if __name__ == "__main__":
