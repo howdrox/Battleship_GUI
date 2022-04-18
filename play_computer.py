@@ -19,6 +19,11 @@ def loop(screen):
     player1_text = font.render("Player 1's board", True, (255, 255, 255))
     computer_text = font.render("Computer's board", True, (255, 255, 255))
 
+    # ships
+    destroyer_img = pygame.image.load("./img/destroyer.png")
+    destroyer = destroyer_img.get_rect()
+    destroyer.center = 530, 490
+
     run = True
     while run:
         # sets background
@@ -36,10 +41,23 @@ def loop(screen):
         screen.blit(player1_text, (313, 20))
         screen.blit(computer_text, (928, 20))
 
+        # show ship
+        screen.blit(destroyer_img, destroyer)
+        pygame.draw.circle(screen, (0, 255, 0), (530, 490), 7, 0)
+
+        # if mouse on top of rect
+        if destroyer.collidepoint(pygame.mouse.get_pos()):
+            pygame.draw.circle(screen, (0, 255, 0), (450, 490), 7, 0)
+
         # event handler
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                destroyer_img = pygame.transform.rotate(destroyer_img, 90)
+                position = destroyer.center
+                destroyer = destroyer_img.get_rect()
+                destroyer.center = position
 
         pygame.display.update()
 
