@@ -1,11 +1,14 @@
 """play_friend.py: Multiplayer battleship game 1v1"""
+# should I check if ships is out of grid before snapping and show an error message
 
-
+from turtle import pos
 import pygame
 
 
 def loop(screen):
     PICKED = False  # variable for drag and drop
+    P1 = []
+    P2 = []
 
     # background
     background = pygame.image.load("./img/background2.jpg")
@@ -13,25 +16,27 @@ def loop(screen):
     # grids (599 x 599)
     grid_img = pygame.image.load("./img/grid_white.png")
 
-    grid_p1 = grid_img.get_rect()
-    grid_p1.center = 440, 370
+    grid_p1 = grid_img.get_rect(center=(440, 360))
 
-    grid_p2 = grid_img.get_rect()
-    grid_p2.center = 1070, 370
+    grid_p2 = grid_img.get_rect(center=(1070, 370))
 
     # parchments (122 x 590)
     parchment_img = pygame.image.load("./img/parchment.png")
 
-    parchment_p1 = parchment_img.get_rect()
-    parchment_p1.center = 71, 365
+    parchment_p1 = parchment_img.get_rect(center=(71, 365))
 
-    parchment_p2 = parchment_img.get_rect()
-    parchment_p2.center = 1436, 365
+    parchment_p2 = parchment_img.get_rect(center=(1436, 365))
 
     # font
     font = pygame.font.Font("freesansbold.ttf", 32)
-    player1_text = font.render("Player 1's board", True, (255, 255, 255))
-    player2_text = font.render("Player 2's board", True, (255, 255, 255))
+    player1_text = font.render("Player 1's board", True, "#FFFFFF")
+    player2_text = font.render("Player 2's board", True, "#FFFFFF")
+
+    font_s = pygame.font.Font("freesansbold.ttf", 24)
+    validate_text = font_s.render("Validate", True, "#FFFFFF")
+    validate_p1 = pygame.Rect((0, 0), (115, 35))
+    validate_p1.center = 650, 680
+    print(validate_p1)
 
     # ships images
     destroyer_img = pygame.image.load("./img/destroyer.png")
@@ -100,6 +105,10 @@ def loop(screen):
         screen.blit(player1_text, (313, 20))
         screen.blit(player2_text, (943, 20))
 
+        # button to validate
+        pygame.draw.rect(screen, "#D74B4B", validate_p1, border_radius=12)
+        screen.blit(validate_text, (600, 668))
+
         # adds ships for player 1
         for i in range(5):
             screen.blit(ships_p1[0][i], ships_p1[1][i])
@@ -110,8 +119,6 @@ def loop(screen):
         screen.blit(submarine_img, ships_p2[2])
         screen.blit(battleship_img, ships_p2[3])
         screen.blit(carrier_img, ships_p2[4])
-
-        pygame.draw.circle(screen, (0, 255, 0), (380, 310), 7, 0)
 
         # gets mouse position
         pos = pygame.mouse.get_pos()
@@ -140,11 +147,32 @@ def loop(screen):
                             pygame.transform.rotate(ships_p1[0][i], 90)
                     PICKED = True
 
+                    # checks if mous on button
+                    if validate_p1.collidepoint(pos):
+                        to_grid()
+                elif event.button == 3:
+                    for i in range(5):
+                        if ships_p1[2][i] == True:
+                            # rotates image
+                            ships_p1[0][i] = pygame.transform.rotate(ships_p1[0][i], 90)
+                            # gets position of rect
+                            position = ships_p1[1][i].center
+                            # sets rect as a new rect of rotated image
+                            ships_p1[1][i] = ships_p1[0][i].get_rect()
+                            # sets center of new rect
+                            ships_p1[1][i].center = position
+                            # counts the number of rotation
+                            ships_p1[3][i] += 1
+
             elif event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1 and PICKED:
                     for i in range(5):
                         if ships_p1[2][i] == True:
                             ships_p1[2][i] = False
+                            # snaps ship in place
+                            ships_p1[1][i].center = snap(
+                                ships_p1[1][i].center, i, ships_p1[3][i], True
+                            )
                     PICKED = False
 
             elif event.type == pygame.MOUSEWHEEL:
@@ -163,6 +191,28 @@ def loop(screen):
                             ships_p1[3][i] += 1
 
         pygame.display.update()
+
+
+def snap(position, ships_id, rotations, player_1):
+    # check if on player 1 grid
+    if player_1:
+        # checks if middle of ship should be a line
+        if ships_id == 0 or ships_id == 3:
+            if rotations % 2 == 0:
+                coord_x = ((position[0] - 140) // 60) * 60 + 170
+                coord_y = ((position[1] - 60) // 60) * 60 + 60
+            else:
+                coord_x = ((position[0] - 140) // 60) * 60 + 140
+                coord_y = ((position[1] - 60) // 60) * 60 + 90
+        # ships whose middle is in the center of a square
+        else:
+            coord_x = ((position[0] - 140) // 60) * 60 + 170
+            coord_y = ((position[1] - 60) // 60) * 60 + 90
+    return (coord_x, coord_y)
+
+
+def to_grid():
+    pass
 
 
 # sets up the display for solo testing
