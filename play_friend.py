@@ -1,13 +1,14 @@
 """play_friend.py: Multiplayer battleship game 1v1"""
 # should I check if ships is out of grid before snapping and show an error message
 
-from turtle import pos
 import pygame
 
 
 def loop(screen):
+    global P1, P2
+
     PICKED = False  # variable for drag and drop
-    P1 = []
+    P1 = [[[""] for x in range(10)] for x in range(10)]
     P2 = []
 
     # background
@@ -36,7 +37,6 @@ def loop(screen):
     validate_text = font_s.render("Validate", True, "#FFFFFF")
     validate_p1 = pygame.Rect((0, 0), (115, 35))
     validate_p1.center = 650, 680
-    print(validate_p1)
 
     # ships images
     destroyer_img = pygame.image.load("./img/destroyer.png")
@@ -127,7 +127,10 @@ def loop(screen):
         if PICKED:
             for i in range(5):
                 if ships_p1[2][i] == True:
-                    ships_p1[1][i].center = pos
+                    if pos[0] > 750:
+                        ships_p1[1][i].center = 750, pos[1]
+                    else:
+                        ships_p1[1][i].center = pos
 
         # event handler
         for event in pygame.event.get():
@@ -144,12 +147,11 @@ def loop(screen):
                             ships_p1[1][i].center = pos
                             ships_p1[2][i] = True
                             picked_one = True
-                            pygame.transform.rotate(ships_p1[0][i], 90)
                     PICKED = True
 
-                    # checks if mous on button
+                    # checks if mouse on button
                     if validate_p1.collidepoint(pos):
-                        to_grid()
+                        validate(grid_p1, ships_p1)
                 elif event.button == 3:
                     for i in range(5):
                         if ships_p1[2][i] == True:
@@ -196,14 +198,18 @@ def loop(screen):
 def snap(position, ships_id, rotations, player_1):
     # check if on player 1 grid
     if player_1:
+        # checks of rotation
+        rotated = False
+        if rotations % 2 == 1:
+            rotated = True
         # checks if middle of ship should be a line
         if ships_id == 0 or ships_id == 3:
-            if rotations % 2 == 0:
-                coord_x = ((position[0] - 140) // 60) * 60 + 170
-                coord_y = ((position[1] - 60) // 60) * 60 + 60
-            else:
+            if rotated:
                 coord_x = ((position[0] - 140) // 60) * 60 + 140
                 coord_y = ((position[1] - 60) // 60) * 60 + 90
+            else:
+                coord_x = ((position[0] - 140) // 60) * 60 + 170
+                coord_y = ((position[1] - 60) // 60) * 60 + 60
         # ships whose middle is in the center of a square
         else:
             coord_x = ((position[0] - 140) // 60) * 60 + 170
@@ -211,8 +217,45 @@ def snap(position, ships_id, rotations, player_1):
     return (coord_x, coord_y)
 
 
-def to_grid():
-    pass
+def validate(grid, ships):
+    valid = True
+    # checks ships are on grid
+    for i in range(5):
+        if not grid.collidepoint(ships[1][i].center):
+            valid = False
+
+    if valid:
+        for i in range(5):
+            to_grid(grid, ships)
+
+    # if number of ships less than 17 -> error
+
+
+def to_grid(grid, ships):
+    global P1
+    # checks for if player 1
+    if grid.center == (440, 360):
+        for i in range(5):
+            x = ships[1][i].center[0]
+            y = ships[1][i].center[1]
+
+            # checks if ship was rotated
+            rotated = False
+            if ships[3][i] % 2 == 1:
+                rotated = True
+
+            # checks if ship center is on line
+            if i == 0:
+                if rotated:
+                    coord_x = (x - 140) // 60 - 1
+                    coord_y = (y - 60) // 60
+                    P1[coord_x][coord_y] = "ship"
+                    P1[coord_x + 1][coord_y] = "ship"
+                else:
+                    coord_x = (x - 140) // 60
+                    coord_y = (y - 60) // 60 - 1
+                    P1[coord_x][coord_y] = "ship"
+                    P1[coord_x][coord_y + 1] = "ship"
 
 
 # sets up the display for solo testing
