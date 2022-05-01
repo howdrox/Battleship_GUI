@@ -1,42 +1,26 @@
 """play_friend.py: Multiplayer battleship game 1v1"""
-# should I check if ships is out of grid before snapping and show an error message
+
 
 import pygame
 
-
+# loads all the necessary things then calls set_ships() to allow the users to position their ships
+# then calls
 def loop(screen):
+    global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text, validate_text
+    global ships_p1
     global P1, P2
 
-    PICKED = False  # variable for drag and drop
     P1 = [[[""] for x in range(10)] for x in range(10)]
     P2 = []
 
     # background
     background = pygame.image.load("./img/background2.jpg")
 
-    # grids (599 x 599)
+    # grid (599 x 599)
     grid_img = pygame.image.load("./img/grid_white.png")
 
-    grid_p1 = grid_img.get_rect(center=(440, 360))
-
-    grid_p2 = grid_img.get_rect(center=(1070, 370))
-
-    # parchments (122 x 590)
+    # parchment (122 x 590)
     parchment_img = pygame.image.load("./img/parchment.png")
-
-    parchment_p1 = parchment_img.get_rect(center=(71, 365))
-
-    parchment_p2 = parchment_img.get_rect(center=(1436, 365))
-
-    # font
-    font = pygame.font.Font("freesansbold.ttf", 32)
-    player1_text = font.render("Player 1's board", True, "#FFFFFF")
-    player2_text = font.render("Player 2's board", True, "#FFFFFF")
-
-    font_s = pygame.font.Font("freesansbold.ttf", 24)
-    validate_text = font_s.render("Validate", True, "#FFFFFF")
-    validate_p1 = pygame.Rect((0, 0), (115, 35))
-    validate_p1.center = 650, 680
 
     # ships images
     destroyer_img = pygame.image.load("./img/destroyer.png")
@@ -45,8 +29,20 @@ def loop(screen):
     battleship_img = pygame.image.load("./img/battleship.png")
     carrier_img = pygame.image.load("./img/carrier.png")
 
+    # fonts
+    font_h1 = pygame.font.Font("freesansbold.ttf", 32)
+    font_h2 = pygame.font.Font("freesansbold.ttf", 24)
+
+    # Player 1 and 2 text
+    player1_text = font_h1.render("Player 1's board", True, "#FFFFFF")
+    player2_text = font_h1.render("Player 2's board", True, "#FFFFFF")
+
+    # validate text
+    validate_text = font_h2.render("Validate", True, "#FFFFFF")
+
     # ships for palyer 1
-    # list of [[ships_img], [ships_rect], [if picked], [number of rotations]]
+    # list of [[ships_img], [ships_rect], [if picked], [number of rotations], [if found]]
+    # initial 10 px between each ship
     ships_p1 = [
         [
             destroyer_img,
@@ -56,48 +52,56 @@ def loop(screen):
             carrier_img,
         ],
         [
-            destroyer_img.get_rect(),
-            cruiser_img.get_rect(),
-            submarine_img.get_rect(),
-            battleship_img.get_rect(),
-            carrier_img.get_rect(),
+            destroyer_img.get_rect(center=(41, 150)),
+            cruiser_img.get_rect(center=(41, 310)),
+            submarine_img.get_rect(center=(41, 500)),
+            battleship_img.get_rect(center=(93, 210)),
+            carrier_img.get_rect(center=(93, 490)),
         ],
         [False, False, False, False, False],
         [0, 0, 0, 0, 0],
+        [False, False, False, False, False],
     ]
-    # initial 10 px between each ship
-    ships_p1[1][0].center = 41, 150
-    ships_p1[1][1].center = 41, 310
-    ships_p1[1][2].center = 41, 500
-    ships_p1[1][3].center = 93, 210
-    ships_p1[1][4].center = 93, 490
 
-    # ships for palyer 2
-    # initial 10 px between each ship
-    ships_p2 = [
-        destroyer_img.get_rect(),
-        cruiser_img.get_rect(),
-        submarine_img.get_rect(),
-        battleship_img.get_rect(),
-        carrier_img.get_rect(),
-    ]
-    ships_p2[0].center = 1406, 150
-    ships_p2[1].center = 1406, 310
-    ships_p2[2].center = 1406, 500
-    ships_p2[3].center = 1458, 210
-    ships_p2[4].center = 1458, 490
+    # ships_p2[0].center = 1406, 150
+    # ships_p2[1].center = 1406, 310
+    # ships_p2[2].center = 1406, 500
+    # ships_p2[3].center = 1458, 210
+    # ships_p2[4].center = 1458, 490
+
+    set_ships(screen)
+
+
+def set_ships(screen):
+    global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text, validate_text
+    global ships_p1
+    global P1, P2
+
+    PICKED = False  # variable for drag and drop
+
+    # grid (599 x 599)
+    grid_p1 = grid_img.get_rect(center=(440, 360))
+    grid_p2 = grid_img.get_rect(center=(1070, 370))
+
+    # parchment (122 x 590)
+    parchment_p1 = parchment_img.get_rect(center=(71, 365))
+    parchment_p2 = parchment_img.get_rect(center=(1436, 365))
+
+    # validate button for player 1
+    validate_p1 = pygame.Rect((0, 0), (115, 35))
+    validate_p1.center = 650, 680
 
     # game loop
     run = True
     while run:
-        # sets background
+        # blits background
         screen.blit(background, (0, 0))
 
-        # puts grids and parchment for player 1
+        # blits grids and parchment for player 1
         screen.blit(grid_img, grid_p1)
         screen.blit(parchment_img, parchment_p1)
 
-        # puts grids and parchment for player 2
+        # blits grids and parchment for player 2
         screen.blit(grid_img, grid_p2)
         screen.blit(parchment_img, parchment_p2)
 
@@ -113,24 +117,8 @@ def loop(screen):
         for i in range(5):
             screen.blit(ships_p1[0][i], ships_p1[1][i])
 
-        # adds ships for player 2
-        screen.blit(destroyer_img, ships_p2[0])
-        screen.blit(cruiser_img, ships_p2[1])
-        screen.blit(submarine_img, ships_p2[2])
-        screen.blit(battleship_img, ships_p2[3])
-        screen.blit(carrier_img, ships_p2[4])
-
         # gets mouse position
         pos = pygame.mouse.get_pos()
-
-        # checks if the ships is being moved
-        if PICKED:
-            for i in range(5):
-                if ships_p1[2][i] == True:
-                    if pos[0] > 750:
-                        ships_p1[1][i].center = 750, pos[1]
-                    else:
-                        ships_p1[1][i].center = pos
 
         # event handler
         for event in pygame.event.get():
@@ -176,6 +164,16 @@ def loop(screen):
                                 ships_p1[1][i].center, i, ships_p1[3][i], True
                             )
                     PICKED = False
+
+            elif event.type == pygame.MOUSEMOTION:
+                # checks if a ship is picked
+                if PICKED:
+                    for i in range(5):
+                        if ships_p1[2][i] == True:
+                            if pos[0] > 750:
+                                ships_p1[1][i].center = 750, pos[1]
+                            else:
+                                ships_p1[1][i].center = pos
 
             elif event.type == pygame.MOUSEWHEEL:
                 if event.y != 0:
@@ -227,12 +225,14 @@ def validate(grid, ships):
     if valid:
         for i in range(5):
             to_grid(grid, ships)
+    else:
+        print("Not all ships are on the grid")
 
     # if number of ships less than 17 -> error
 
 
 def to_grid(grid, ships):
-    global P1
+    global P1, P2
     # checks for if player 1
     if grid.center == (440, 360):
         for i in range(5):
@@ -244,7 +244,7 @@ def to_grid(grid, ships):
             if ships[3][i] % 2 == 1:
                 rotated = True
 
-            # checks if ship center is on line
+            # checks for destroyer
             if i == 0:
                 if rotated:
                     coord_x = (x - 140) // 60 - 1
@@ -254,6 +254,17 @@ def to_grid(grid, ships):
                 else:
                     coord_x = (x - 140) // 60
                     coord_y = (y - 60) // 60 - 1
+                    P1[coord_x][coord_y] = "ship"
+                    P1[coord_x][coord_y + 1] = "ship"
+            elif i == 1:
+                coord_x = (x - 140) // 60
+                coord_y = (y - 60) // 60
+                if rotated:
+                    P1[coord_x - 1][coord_y] = "ship"
+                    P1[coord_x][coord_y] = "ship"
+                    P1[coord_x + 1][coord_y] = "ship"
+                else:
+                    P1[coord_x][coord_y - 1] = "ship"
                     P1[coord_x][coord_y] = "ship"
                     P1[coord_x][coord_y + 1] = "ship"
 
