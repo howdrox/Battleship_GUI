@@ -73,13 +73,11 @@ def set_ships(screen):
     global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text
     global ships_p1
     global P1, P2
-    global ERROR
 
     PICKED = False  # variable for drag and drop
-    ERROR = False  # if centers of all ships are not inside grid
 
     # grid (599 x 599)
-    grid_p1 = grid_img.get_rect(center=(440, 360))
+    grid_p1 = grid_img.get_rect(center=(439, 359))
     grid_p2 = grid_img.get_rect(center=(1070, 370))
 
     # parchment (122 x 590)
@@ -125,10 +123,6 @@ def set_ships(screen):
         # adds ships for player 1
         for i in range(5):
             screen.blit(ships_p1[0][i], ships_p1[1][i])
-
-        # shows error message
-        if ERROR:
-            pass
 
         # gets mouse position
         pos = pygame.mouse.get_pos()
@@ -237,12 +231,29 @@ def snap(position, ships_id, rotations, player_1):
 
 
 def validate(grid, ships):
-    global ERROR
     valid = True
     # checks center of ships are on grid
     for i in range(5):
         if not grid.collidepoint(ships[1][i].center):
             valid = False
+    
+    # if still valid checks if whole ship on grid
+    if valid:
+        print("testing")
+        for i in range(5):
+            if ships[1][i].right < grid.left:
+                valid = False
+            elif ships[1][i].left > grid.right:
+                valid = False
+                print("more left")
+            elif ships[1][i].bottom < grid.top:
+                valid = False
+            elif ships[1][i].top > grid.bottom:
+                valid = False
+                print("more down")
+
+    ## NEED TO CHECK IF whole ship on grid
+    ## if number of ships less than 17 -> error
 
     if valid:
         for i in range(5):
@@ -252,7 +263,6 @@ def validate(grid, ships):
 
     return valid
 
-    # if number of ships less than 17 -> error
 
 
 ### ERROR IF PART OF SHIP IS OUTSIDE GRID
