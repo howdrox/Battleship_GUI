@@ -4,14 +4,15 @@
 import pygame
 
 # loads all the necessary things then calls set_ships() to allow the users to position their ships
-# then calls
-def loop(screen):
-    global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text
+def init(screen):
+    global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text, error_img
     global ships_p1
-    global P1, P2
+    global P1, P2, WHO
 
-    P1 = [[[""] for x in range(10)] for x in range(10)]
+    P1 = [["----" for x in range(10)] for x in range(10)]
     P2 = []
+    # who's turn it is with True beign player 1
+    WHO = True
 
     # background
     background = pygame.image.load("./img/background2.jpg")
@@ -29,6 +30,9 @@ def loop(screen):
     battleship_img = pygame.image.load("./img/battleship.png")
     carrier_img = pygame.image.load("./img/carrier.png")
 
+    # error
+    error_img = pygame.image.load("./img/blue_screen.png")
+
     # fonts
     font_h1 = pygame.font.Font("freesansbold.ttf", 32)
     font_h2 = pygame.font.Font("freesansbold.ttf", 24)
@@ -40,6 +44,7 @@ def loop(screen):
     # ships for palyer 1
     # list of [[ships_img], [ships_rect], [if picked], [number of rotations], [if found]]
     # initial 10 px between each ship
+    # used boleans as they use less memory space, 1 byte instead of 24 bytes for an int
     ships_p1 = [
         [
             destroyer_img,
@@ -70,7 +75,7 @@ def loop(screen):
 
 
 def set_ships(screen):
-    global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text
+    global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text, error_img
     global ships_p1
     global P1, P2
 
@@ -90,13 +95,6 @@ def set_ships(screen):
     # validate button for player 1
     validate_p1 = pygame.Rect((0, 0), (115, 35))
     validate_p1.center = 650, 680
-
-    # error text
-    error_text = font_h2.render("Error, please try again", True, "#FFFFFF")
-
-    # error box
-    error_box = pygame.Rect((0, 0), (270, 40))
-    error_box.center = 440, 360
 
     # game loop
     run = True
@@ -144,16 +142,31 @@ def set_ships(screen):
                             picked_one = True
                     PICKED = True
 
-                    # checks if mouse on button
+                    # checks if mouse on validate button
                     if validate_p1.collidepoint(pos):
                         valid = validate(grid_p1, ships_p1)
                         if not valid:
-                            pygame.draw.rect(
-                                screen, "#FF3B3B", error_box, border_radius=7
-                            )
-                            screen.blit(error_text, (311, 347))
+                            # pygame.draw.rect(
+                            #     screen, "#FF3B3B", error_box, border_radius=7
+                            # )
+                            screen.blit(error_img, (0, 0))
                             pygame.display.update()
-                            pygame.time.wait(1000)
+                            pygame.time.wait(150)
+                            screen.blit(error_img, (100, 100))
+                            pygame.display.update()
+                            pygame.time.wait(150)
+                            screen.blit(error_img, (200, 200))
+                            pygame.display.update()
+                            pygame.time.wait(150)
+                            screen.blit(error_img, (600, 0))
+                            pygame.display.update()
+                            pygame.time.wait(150)
+                            screen.blit(error_img, (700, 100))
+                            pygame.display.update()
+                            pygame.time.wait(150)
+                            screen.blit(error_img, (800, 200))
+                            pygame.display.update()
+                            pygame.time.wait(150)
 
                 elif event.button == 3:
                     for i in range(5):
@@ -218,11 +231,11 @@ def snap(position, ships_id, rotations, player_1):
         # checks if middle of ship should be a line
         if ships_id == 0 or ships_id == 3:
             if rotated:
-                coord_x = ((position[0] - 140) // 60) * 60 + 140
+                coord_x = ((position[0] - 110) // 60) * 60 + 140
                 coord_y = ((position[1] - 60) // 60) * 60 + 90
             else:
                 coord_x = ((position[0] - 140) // 60) * 60 + 170
-                coord_y = ((position[1] - 60) // 60) * 60 + 60
+                coord_y = ((position[1] - 30) // 60) * 60 + 60
         # ships whose middle is in the center of a square
         else:
             coord_x = ((position[0] - 140) // 60) * 60 + 170
@@ -236,40 +249,39 @@ def validate(grid, ships):
     for i in range(5):
         if not grid.collidepoint(ships[1][i].center):
             valid = False
-    
+
     # if still valid checks if whole ship on grid
     if valid:
-        print("testing")
         for i in range(5):
-            if ships[1][i].right < grid.left:
+            if ships[1][i].left < grid.left:
                 valid = False
-            elif ships[1][i].left > grid.right:
+                print("rigth")
+            elif ships[1][i].right > grid.right + 1:
                 valid = False
                 print("more left")
-            elif ships[1][i].bottom < grid.top:
-                valid = False
-            elif ships[1][i].top > grid.bottom:
+            elif ships[1][i].top < grid.top:
                 valid = False
                 print("more down")
+            elif ships[1][i].bottom > grid.bottom + 1:
+                valid = False
+                print("top")
 
-    ## NEED TO CHECK IF whole ship on grid
-    ## if number of ships less than 17 -> error
+    # if number of ships are on top of each other
+    if num_ships(grid):
+        valid = False
 
     if valid:
-        for i in range(5):
-            to_grid(grid, ships)
+        to_mat(grid, ships)
     else:
         print("Not all ships are on the grid")
 
     return valid
 
 
-
-### ERROR IF PART OF SHIP IS OUTSIDE GRID
-def to_grid(grid, ships):
+def to_mat(grid, ships):
     global P1, P2
     # checks for if player 1
-    if grid.center == (440, 360):
+    if grid.center == (439, 359):
         for i in range(5):
             x = ships[1][i].center[0]
             y = ships[1][i].center[1]
@@ -349,8 +361,23 @@ def show_mat(m):
     print("\n")
 
 
+def num_ships(grid):
+    global P1, P2
+
+    if grid.center == (359, 439):
+        m = P1
+    else:
+        m = P2
+    counter = 0
+    for i in range(len(m)):
+        for j in range(len(m[0])):
+            if m[i][j] == "ship":
+                counter += 1
+    return counter
+
+
 # sets up the display for solo testing
-# main menu is supposed to call the loop() function when the Play Against a Friend button is pressed
+# main menu is supposed to call the init() function when the "Play Against a Friend" button is pressed
 def main():
     pygame.init()
 
@@ -363,7 +390,7 @@ def main():
     icon = pygame.image.load("./img/icon.png")
     pygame.display.set_icon(icon)
 
-    loop(screen)
+    init(screen)
     pygame.quit()
 
 
