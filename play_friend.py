@@ -4,6 +4,7 @@
 import pygame
 
 # loads all the necessary things then calls set_ships() to allow the users to position their ships
+# note: loads only things that are needed for all funcitons and stages of the game
 def init(screen):
     global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text, error_img, error_img_2, error_img_3
     global ships_p1, ships_p2
@@ -44,7 +45,7 @@ def init(screen):
     player2_text = font_h1.render("Player 2's board", True, "#FFFFFF")
 
     # ships for palyer 1
-    # list of [[ships_img], [ships_rect], [if picked], [number of rotations], [if found]]
+    # list of [[ships_img], [ships_rect], [if picked], [number of rotations], [if sunk]]
     # initial 10 px between each ship
     ships_p1 = [
         [
@@ -67,7 +68,7 @@ def init(screen):
     ]
 
     # ships for palyer 2
-    # list of [[ships_img], [ships_rect], [if picked], [number of rotations], [if found]]
+    # list of [[ships_img], [ships_rect], [if picked], [number of rotations], [if sunk]]
     # initial 10 px between each ship
     ships_p2 = [
         [
@@ -90,10 +91,11 @@ def init(screen):
     ]
 
     set_ships(screen)
+    play_game(screen)
 
 
 def set_ships(screen):
-    global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text, error_img, error_img_2, error_img_3
+    global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text
     global ships_p1, ships_p2
     global P1, P2, WHO
     global SIZE
@@ -102,11 +104,23 @@ def set_ships(screen):
 
     # grid (599 x 599)
     grid_p1 = grid_img.get_rect(center=(439, 359))
-    grid_p2 = grid_img.get_rect(center=(1069, 359))
+    grid_p2 = grid_img.get_rect(center=(1059, 359))
+    # print(
+    #     f"grid p1 left {grid_p1.left} right {grid_p1.right} top {grid_p1.top} bottom {grid_p1.bottom}"
+    # )
+    # print(
+    #     f"grid p2left {grid_p2.left} right {grid_p2.right} top {grid_p2.top} bottom {grid_p2.bottom}"
+    # )
 
     # parchment (122 x 590)
     parchment_p1 = parchment_img.get_rect(center=(71, 365))
-    parchment_p2 = parchment_img.get_rect(center=(1436, 365))
+    parchment_p2 = parchment_img.get_rect(center=(1428, 365))
+    # print(
+    #     f"parchment p1 left {parchment_p1.left} right {parchment_p1.right} top {parchment_p1.top} bottom {parchment_p1.bottom}"
+    # )
+    # print(
+    #     f"parchment p2 left {parchment_p2.left} right {parchment_p2.right} top {parchment_p2.top} bottom {parchment_p2.bottom}"
+    # )
 
     # validate text
     validate_text = font_h2.render("Validate", True, "#FFFFFF")
@@ -169,9 +183,17 @@ def set_ships(screen):
                     picked_one = False
                     # checks if mouse on ship
                     for i in range(5):
-                        if ships_p1[1][i].collidepoint(pos) and not picked_one:
+                        if WHO and ships_p1[1][i].collidepoint(pos) and not picked_one:
                             ships_p1[1][i].center = pos
                             ships_p1[2][i] = True
+                            picked_one = True
+                        elif (
+                            not WHO
+                            and ships_p2[1][i].collidepoint(pos)
+                            and not picked_one
+                        ):
+                            ships_p2[1][i].center = pos
+                            ships_p2[2][i] = True
                             picked_one = True
                     PICKED = True
 
@@ -179,30 +201,17 @@ def set_ships(screen):
                     if WHO and validate_p1.collidepoint(pos):
                         valid = validate(grid_p1, ships_p1)
                         if not valid:
-                            screen.blit(
-                                error_img,
-                                (SIZE[0] / 2 - 1000 / 2, SIZE[1] / 2 - 600 / 2),
-                            )
-                            pygame.display.update()
-                            pygame.time.wait(150)
-                            screen.blit(
-                                error_img_2,
-                                (
-                                    SIZE[0] / 2 - (1000 * 1.3) / 2,
-                                    SIZE[1] / 2 - (600 * 1.3) / 2,
-                                ),
-                            )
-                            pygame.display.update()
-                            pygame.time.wait(150)
-                            screen.blit(
-                                error_img_3,
-                                (
-                                    SIZE[0] / 2 - (1000 * 1.6) / 2,
-                                    SIZE[1] / 2 - (600 * 1.6) / 2,
-                                ),
-                            )
-                            pygame.display.update()
-                            pygame.time.wait(150)
+                            show_error(screen)
+                        else:
+                            WHO = False
+
+                    elif not WHO and validate_p2.collidepoint(pos):
+                        valid = validate(grid_p2, ships_p2)
+                        if not valid:
+                            show_error(screen)
+                        else:
+                            WHO = True
+                            run = False
 
                 elif event.button == 3:
                     for i in range(5):
@@ -217,6 +226,17 @@ def set_ships(screen):
                             ships_p1[1][i].center = position
                             # counts the number of rotation
                             ships_p1[3][i] += 1
+                        elif ships_p2[2][i] == True:
+                            # rotates image
+                            ships_p2[0][i] = pygame.transform.rotate(ships_p2[0][i], 90)
+                            # gets position of rect
+                            position = ships_p2[1][i].center
+                            # sets rect as a new rect of rotated image
+                            ships_p2[1][i] = ships_p2[0][i].get_rect()
+                            # sets center of new rect
+                            ships_p2[1][i].center = position
+                            # counts the number of rotation
+                            ships_p2[3][i] += 1
 
             elif event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1 and PICKED:
@@ -224,9 +244,11 @@ def set_ships(screen):
                         if ships_p1[2][i] == True:
                             ships_p1[2][i] = False
                             # snaps ship in place
-                            ships_p1[1][i].center = snap(
-                                ships_p1[1][i].center, i, ships_p1[3][i], True
-                            )
+                            ships_p1[1][i].center = snap(grid_p1, ships_p1, i)
+                        elif ships_p2[2][i] == True:
+                            ships_p2[2][i] = False
+                            # snaps ships in place
+                            ships_p2[1][i].center = snap(grid_p2, ships_p2, i)
                     PICKED = False
 
             elif event.type == pygame.MOUSEMOTION:
@@ -234,10 +256,15 @@ def set_ships(screen):
                 if PICKED:
                     for i in range(5):
                         if ships_p1[2][i] == True:
-                            if pos[0] > 750:
-                                ships_p1[1][i].center = 750, pos[1]
+                            if pos[0] > (SIZE[0] / 2):
+                                ships_p1[1][i].center = (SIZE[0] / 2), pos[1]
                             else:
                                 ships_p1[1][i].center = pos
+                        elif ships_p2[2][i] == True:
+                            if pos[0] < (SIZE[0] / 2):
+                                ships_p2[1][i].center = (SIZE[0] / 2), pos[1]
+                            else:
+                                ships_p2[1][i].center = pos
 
             elif event.type == pygame.MOUSEWHEEL:
                 if event.y != 0:
@@ -253,33 +280,78 @@ def set_ships(screen):
                             ships_p1[1][i].center = position
                             # counts the number of rotation
                             ships_p1[3][i] += 1
+                        elif ships_p2[2][i] == True:
+                            # rotates image
+                            ships_p2[0][i] = pygame.transform.rotate(ships_p2[0][i], 90)
+                            # gets position of rect
+                            position = ships_p2[1][i].center
+                            # sets rect as a new rect of rotated image
+                            ships_p2[1][i] = ships_p2[0][i].get_rect()
+                            # sets center of new rect
+                            ships_p2[1][i].center = position
+                            # counts the number of rotation
+                            ships_p2[3][i] += 1
 
         pygame.display.update()
+    ### NEED TO FIGURE OUT HOW TO QUIT
+    if not run:
+        pygame.quit()
 
 
-def snap(position, ships_id, rotations, player_1):
-    # check if on player 1 grid
-    if player_1:
-        # checks of rotation
-        rotated = False
-        if rotations % 2 == 1:
-            rotated = True
-        # checks if middle of ship should be a line
-        if ships_id == 0 or ships_id == 3:
-            if rotated:
-                coord_x = ((position[0] - 110) // 60) * 60 + 140
-                coord_y = ((position[1] - 60) // 60) * 60 + 90
-            else:
-                coord_x = ((position[0] - 140) // 60) * 60 + 170
-                coord_y = ((position[1] - 30) // 60) * 60 + 60
-        # ships whose middle is in the center of a square
+def play_game(screen):
+    global background, grid_img, font_h1, font_h2, player1_text, player2_text
+    global ships_p1, ships_p2
+    global P1, P2, WHO
+    # global SIZE
+
+    # grid (599 x 599)
+    grid_p1 = grid_img.get_rect(center=(439, 359))
+    grid_p2 = grid_img.get_rect(center=(1069, 359))
+
+    # game loop
+    run = True
+    while run:
+        # blits background
+        screen.blit(background, (0, 0))
+
+        # blits grids and parchment for player 1
+        screen.blit(grid_img, grid_p1)
+
+        # blits grids and parchment for player 2
+        screen.blit(grid_img, grid_p2)
+
+        # add player 1 and player 2 text
+        screen.blit(player1_text, (313, 20))
+        screen.blit(player2_text, (943, 20))
+
+
+def snap(grid, ships, id):
+    position = ships[1][id].center
+    g_x = grid.left
+    g_y = grid.top
+
+    # checks for rotation
+    rotated = False
+    if ships[3][id] % 2 == 1:
+        rotated = True
+
+    # checks if middle of ship should be a line
+    if id == 0 or id == 3:
+        if rotated:
+            coord_x = ((position[0] - g_x + 30) // 60) * 60 + g_x
+            coord_y = ((position[1] - g_y) // 60) * 60 + g_y + 30
         else:
-            coord_x = ((position[0] - 140) // 60) * 60 + 170
-            coord_y = ((position[1] - 60) // 60) * 60 + 90
+            coord_x = ((position[0] - g_x) // 60) * 60 + g_x + 30
+            coord_y = ((position[1] - g_y + 30) // 60) * 60 + g_y
+    # ships whose middle is in the center of a square
+    else:
+        coord_x = ((position[0] - g_x) // 60) * 60 + g_x + 30
+        coord_y = ((position[1] - g_y) // 60) * 60 + g_y + 30
     return (coord_x, coord_y)
 
 
 def validate(grid, ships):
+    global P1, P2, WHO
     valid = True
     # checks center of ships are on grid
     for i in range(5):
@@ -309,6 +381,11 @@ def validate(grid, ships):
 
     # if number of ships < 17 -> ships are on top of each other
     if num_ships() < 17:
+        # resets players matrice with nothing on it
+        if WHO:
+            P1 = [["----" for x in range(10)] for x in range(10)]
+        else:
+            P2 = [["----" for x in range(10)] for x in range(10)]
         valid = False
         print("Some ships are overlapping")
 
@@ -317,80 +394,85 @@ def validate(grid, ships):
 
 def to_mat(grid, ships):
     global P1, P2, WHO
-    # checks for if player 1
+
     if WHO:
-        for i in range(5):
-            x = ships[1][i].center[0]
-            y = ships[1][i].center[1]
+        mat = P1
+    else:
+        mat = P2
 
-            g_x = grid.left
-            g_y = grid.right
+    g_x = grid.left
+    g_y = grid.top
 
-            # checks if ship was rotated
-            rotated = False
-            if ships[3][i] % 2 == 1:
-                rotated = True
+    # checks for if player 1w
+    for i in range(5):
+        x = ships[1][i].center[0]
+        y = ships[1][i].center[1]
 
-            if i == 0:
-                if rotated:
-                    coord_x = (x - 140) // 60 - 1
-                    coord_y = (y - 60) // 60
-                    P1[coord_x][coord_y] = "ship"
-                    P1[coord_x + 1][coord_y] = "ship"
+        # checks if ship was rotated
+        rotated = False
+        if ships[3][i] % 2 == 1:
+            rotated = True
+
+        if i == 0:
+            if rotated:
+                coord_x = (x - g_x) // 60 - 1
+                coord_y = (y - g_y) // 60
+                mat[coord_x][coord_y] = "ship"
+                mat[coord_x + 1][coord_y] = "ship"
+            else:
+                coord_x = (x - g_x) // 60
+                coord_y = (y - g_y) // 60 - 1
+                mat[coord_x][coord_y] = "ship"
+                mat[coord_x][coord_y + 1] = "ship"
+        elif i == 1 or i == 2:
+            coord_x = (x - g_x) // 60
+            coord_y = (y - g_y) // 60
+            if rotated:
+                mat[coord_x - 1][coord_y] = "ship"
+                mat[coord_x][coord_y] = "ship"
+                mat[coord_x + 1][coord_y] = "ship"
+            else:
+                mat[coord_x][coord_y - 1] = "ship"
+                mat[coord_x][coord_y] = "ship"
+                mat[coord_x][coord_y + 1] = "ship"
+        elif i == 3:
+            if rotated:
+                coord_x = (x - g_x) // 60 - 1
+                coord_y = (y - g_y) // 60
+                # checks if ships has 2 parts to the right
+                if (ships_p1[3][3] - 1) % 2 == 0:
+                    mat[coord_x - 1][coord_y] = "ship"
+                    mat[coord_x][coord_y] = "ship"
+                    mat[coord_x + 1][coord_y] = "ship"
+                    mat[coord_x + 2][coord_y] = "ship"
                 else:
-                    coord_x = (x - 140) // 60
-                    coord_y = (y - 60) // 60 - 1
-                    P1[coord_x][coord_y] = "ship"
-                    P1[coord_x][coord_y + 1] = "ship"
-            elif i == 1 or i == 2:
-                coord_x = (x - 140) // 60
-                coord_y = (y - 60) // 60
-                if rotated:
-                    P1[coord_x - 1][coord_y] = "ship"
-                    P1[coord_x][coord_y] = "ship"
-                    P1[coord_x + 1][coord_y] = "ship"
-                else:
-                    P1[coord_x][coord_y - 1] = "ship"
-                    P1[coord_x][coord_y] = "ship"
-                    P1[coord_x][coord_y + 1] = "ship"
-            elif i == 3:
-                if rotated:
-                    coord_x = (x - 140) // 60 - 1
-                    coord_y = (y - 60) // 60
-                    # checks if ships has 2 parts to the right
-                    if (ships_p1[3][3] - 1) % 2 == 0:
-                        P1[coord_x - 1][coord_y] = "ship"
-                        P1[coord_x][coord_y] = "ship"
-                        P1[coord_x + 1][coord_y] = "ship"
-                        P1[coord_x + 2][coord_y] = "ship"
-                    else:
-                        P1[coord_x - 2][coord_y] = "ship"
-                        P1[coord_x - 1][coord_y] = "ship"
-                        P1[coord_x][coord_y] = "ship"
-                        P1[coord_x + 1][coord_y] = "ship"
-                else:
-                    coord_x = (x - 140) // 60
-                    coord_y = (y - 60) // 60 - 1
-                    P1[coord_x][coord_y - 1] = "ship"
-                    P1[coord_x][coord_y] = "ship"
-                    P1[coord_x][coord_y + 1] = "ship"
-                    P1[coord_x][coord_y + 2] = "ship"
-            elif i == 4:
-                coord_x = (x - 140) // 60
-                coord_y = (y - 60) // 60
-                if rotated:
-                    P1[coord_x - 2][coord_y] = "ship"
-                    P1[coord_x - 1][coord_y] = "ship"
-                    P1[coord_x][coord_y] = "ship"
-                    P1[coord_x + 1][coord_y] = "ship"
-                    P1[coord_x + 2][coord_y] = "ship"
-                else:
-                    P1[coord_x][coord_y - 2] = "ship"
-                    P1[coord_x][coord_y - 1] = "ship"
-                    P1[coord_x][coord_y] = "ship"
-                    P1[coord_x][coord_y + 1] = "ship"
-                    P1[coord_x][coord_y + 2] = "ship"
-    show_mat(P1)
+                    mat[coord_x - 2][coord_y] = "ship"
+                    mat[coord_x - 1][coord_y] = "ship"
+                    mat[coord_x][coord_y] = "ship"
+                    mat[coord_x + 1][coord_y] = "ship"
+            else:
+                coord_x = (x - g_x) // 60
+                coord_y = (y - g_y) // 60 - 1
+                mat[coord_x][coord_y - 1] = "ship"
+                mat[coord_x][coord_y] = "ship"
+                mat[coord_x][coord_y + 1] = "ship"
+                mat[coord_x][coord_y + 2] = "ship"
+        elif i == 4:
+            coord_x = (x - g_x) // 60
+            coord_y = (y - g_y) // 60
+            if rotated:
+                mat[coord_x - 2][coord_y] = "ship"
+                mat[coord_x - 1][coord_y] = "ship"
+                mat[coord_x][coord_y] = "ship"
+                mat[coord_x + 1][coord_y] = "ship"
+                mat[coord_x + 2][coord_y] = "ship"
+            else:
+                mat[coord_x][coord_y - 2] = "ship"
+                mat[coord_x][coord_y - 1] = "ship"
+                mat[coord_x][coord_y] = "ship"
+                mat[coord_x][coord_y + 1] = "ship"
+                mat[coord_x][coord_y + 2] = "ship"
+    show_mat(mat)
 
 
 def show_mat(m):
@@ -405,15 +487,43 @@ def num_ships():
     global P1, P2, WHO
 
     if WHO:
-        m = P1
+        mat = P1
     else:
-        m = P2
+        mat = P2
     counter = 0
     for i in range(10):
         for j in range(10):
-            if m[i][j] == "ship":
+            if mat[i][j] == "ship":
                 counter += 1
     return counter
+
+
+def show_error(screen):
+    global error_img, error_img_2, error_img_3
+    screen.blit(
+        error_img,
+        (SIZE[0] / 2 - 1000 / 2, SIZE[1] / 2 - 600 / 2),
+    )
+    pygame.display.update()
+    pygame.time.wait(150)
+    screen.blit(
+        error_img_2,
+        (
+            SIZE[0] / 2 - (1000 * 1.3) / 2,
+            SIZE[1] / 2 - (600 * 1.3) / 2,
+        ),
+    )
+    pygame.display.update()
+    pygame.time.wait(150)
+    screen.blit(
+        error_img_3,
+        (
+            SIZE[0] / 2 - (1000 * 1.6) / 2,
+            SIZE[1] / 2 - (600 * 1.6) / 2,
+        ),
+    )
+    pygame.display.update()
+    pygame.time.wait(150)
 
 
 # sets up the display for solo testing
@@ -432,7 +542,6 @@ def main():
     pygame.display.set_icon(icon)
 
     init(screen)
-    pygame.quit()
 
 
 if __name__ == "__main__":
