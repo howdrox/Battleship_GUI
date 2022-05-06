@@ -25,11 +25,11 @@ def init(screen):
     parchment_img = pygame.image.load("./img/parchment.png")
 
     # ships images
-    destroyer_img = pygame.image.load("./img/destroyer.png")
-    cruiser_img = pygame.image.load("./img/cruiser.png")
-    submarine_img = pygame.image.load("./img/submarine.png")
-    battleship_img = pygame.image.load("./img/battleship.png")
-    carrier_img = pygame.image.load("./img/carrier.png")
+    destroyer_img = pygame.image.load("./img/destroyer2.png")
+    cruiser_img = pygame.image.load("./img/cruiser2.png")
+    submarine_img = pygame.image.load("./img/submarine2.png")
+    battleship_img = pygame.image.load("./img/battleship2.png")
+    carrier_img = pygame.image.load("./img/carrier2.png")
 
     # error (1000 x 600)
     error_img = pygame.image.load("./img/blue_screen.png")
