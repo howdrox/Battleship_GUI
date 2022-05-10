@@ -8,15 +8,17 @@ import pygame
 def init(screen):
     global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text, error_img, error_img_2, error_img_3
     global ships_p1, ships_p2
-    global P1, P2, WHO
+    global P1, P2, WHO, RUN
 
     P1 = [["----" for x in range(10)] for x in range(10)]
     P2 = [["----" for x in range(10)] for x in range(10)]
     # who's turn it is with True beign player 1
     WHO = True
+    # global variable if pygame is running
+    RUN = True
 
     # background
-    background = pygame.image.load("./img/background2.jpg")
+    background = pygame.image.load("./img/background3.jpg")
 
     # grid (599 x 599)
     grid_img = pygame.image.load("./img/grid_white.png")
@@ -90,14 +92,261 @@ def init(screen):
         [False, False, False, False, False],
     ]
 
-    set_ships(screen)
-    play_game(screen)
+    # set_ships(screen)
+    # for testing P1 and P2 are set
+    P1 = [
+        [
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+        ],
+        [
+            "----",
+            "ship",
+            "----",
+            "----",
+            "----",
+            "----",
+            "ship",
+            "ship",
+            "ship",
+            "----",
+        ],
+        [
+            "----",
+            "ship",
+            "----",
+            "----",
+            "----",
+            "----",
+            "ship",
+            "----",
+            "----",
+            "----",
+        ],
+        [
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "ship",
+            "----",
+            "----",
+            "----",
+        ],
+        [
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "ship",
+            "----",
+            "----",
+            "----",
+        ],
+        [
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "ship",
+            "----",
+        ],
+        [
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "ship",
+            "----",
+        ],
+        [
+            "----",
+            "ship",
+            "ship",
+            "ship",
+            "ship",
+            "----",
+            "----",
+            "----",
+            "ship",
+            "----",
+        ],
+        [
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "ship",
+            "----",
+        ],
+        [
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "ship",
+            "----",
+        ],
+    ]
+    P2 = [
+        [
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+        ],
+        [
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+        ],
+        [
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "ship",
+            "----",
+        ],
+        [
+            "----",
+            "----",
+            "----",
+            "ship",
+            "ship",
+            "ship",
+            "----",
+            "----",
+            "ship",
+            "----",
+        ],
+        [
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "ship",
+            "----",
+        ],
+        [
+            "----",
+            "----",
+            "----",
+            "----",
+            "ship",
+            "ship",
+            "----",
+            "----",
+            "ship",
+            "----",
+        ],
+        [
+            "----",
+            "ship",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+        ],
+        [
+            "----",
+            "ship",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+        ],
+        [
+            "----",
+            "ship",
+            "----",
+            "----",
+            "ship",
+            "ship",
+            "ship",
+            "ship",
+            "ship",
+            "----",
+        ],
+        [
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+        ],
+    ]
+    # checks if the window was closed, if not then continue
+    if RUN:
+        play_game(screen)
 
 
 def set_ships(screen):
     global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text
     global ships_p1, ships_p2
-    global P1, P2, WHO
+    global P1, P2, WHO, RUN
     global SIZE
 
     PICKED = False  # variable for drag and drop
@@ -176,6 +425,7 @@ def set_ships(screen):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+                RUN = False
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1 and not PICKED:
@@ -294,19 +544,26 @@ def set_ships(screen):
 
         pygame.display.update()
     ### NEED TO FIGURE OUT HOW TO QUIT
-    if not run:
+    if not RUN:
         pygame.quit()
 
 
 def play_game(screen):
     global background, grid_img, font_h1, font_h2, player1_text, player2_text
     global ships_p1, ships_p2
-    global P1, P2, WHO
+    global P1, P2, WHO, RUN
     # global SIZE
 
     # grid (599 x 599)
-    grid_p1 = grid_img.get_rect(center=(439, 359))
-    grid_p2 = grid_img.get_rect(center=(1069, 359))
+    grid_p1 = grid_img.get_rect(center=(309, 359))
+    grid_p2 = grid_img.get_rect(center=(1189, 359))
+
+    # torpedo (182 x 58)
+    torpedo_img = pygame.image.load("./img/torpedo.png")
+    torpedo = torpedo_img.get_rect(center=(750, 359))
+
+    # blits all the circles and crosses on hits or misses for both players
+    show_if_hit(screen)
 
     # game loop
     run = True
@@ -321,8 +578,31 @@ def play_game(screen):
         screen.blit(grid_img, grid_p2)
 
         # add player 1 and player 2 text
-        screen.blit(player1_text, (313, 20))
-        screen.blit(player2_text, (943, 20))
+        screen.blit(player1_text, (183, 20))
+        screen.blit(player2_text, (1073, 20))
+
+        # adds torpedo
+        screen.blit(torpedo_img, torpedo)
+
+        pos = pygame.mouse.get_pos()
+
+        # event handler
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+                RUN = False
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if WHO and grid_p1.collidepoint(pos):
+                        # converts mouse position as coordinates of a matrice
+                        coord = mouse_to_coord(pos, grid_p1)
+                        show_if_hit(coord, P1, grid_p1, screen)
+                    elif not WHO and grid_p2.collidepoint(pos):
+                        # converts mouse position as coordinates of a matrice
+                        coord = mouse_to_coord(pos, grid_p2)
+
+        pygame.display.update()
 
 
 def snap(grid, ships, id):
@@ -524,6 +804,32 @@ def show_error(screen):
     )
     pygame.display.update()
     pygame.time.wait(150)
+
+
+def mouse_to_coord(pos, grid):
+    g_x = grid.left
+    g_y = grid.top
+
+    coord_x = (pos[0] - g_x) // 60
+    coord_y = (pos[1] - g_y) // 60
+
+    return (coord_x, coord_y)
+
+
+def show_if_hit(screen):
+    for i in range(5):
+        pass
+
+
+def change_matrice(coord, mat):
+    coord_x = coord[0]
+    coord_y = coord[1]
+
+    value = mat[coord_x][coord_y]
+    if value == "ship":
+        mat[coord_x][coord_y] = "hit "
+    elif value == "----":
+        mat[coord_x][coord_y] = "miss"
 
 
 # sets up the display for solo testing
