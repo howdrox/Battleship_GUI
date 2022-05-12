@@ -602,6 +602,7 @@ def play_game(screen):
         pygame.display.update()
 
 
+# snaps the ships position to the nearest square
 def snap(grid, ships, id):
     position = ships[1][id].center
     g_x = grid.left
