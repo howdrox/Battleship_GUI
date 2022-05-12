@@ -12,18 +12,18 @@ def init(screen):
 
     P1 = [["----" for x in range(10)] for x in range(10)]
     P2 = [["----" for x in range(10)] for x in range(10)]
-    # who's turn it is with True beign player 1
+    # who's turn it is with True being player 1
     WHO = True
-    # global variable if pygame is running
+    # global variable if pygame should be running
     RUN = True
 
-    # background
+    # background image
     background = pygame.image.load("./img/background3.jpg")
 
-    # grid (599 x 599)
+    # grid image (599 x 599)
     grid_img = pygame.image.load("./img/grid_white.png")
 
-    # parchment (122 x 590)
+    # parchment image (122 x 590)
     parchment_img = pygame.image.load("./img/parchment.png")
 
     # ships images
@@ -33,7 +33,7 @@ def init(screen):
     battleship_img = pygame.image.load("./img/battleship2.png")
     carrier_img = pygame.image.load("./img/carrier2.png")
 
-    # error (1000 x 600)
+    # error images (1000 x 600)
     error_img = pygame.image.load("./img/blue_screen.png")
     error_img_2 = pygame.transform.scale(error_img, (1000 * 1.3, 600 * 1.3))
     error_img_3 = pygame.transform.scale(error_img, (1000 * 1.6, 600 * 1.6))
@@ -46,8 +46,8 @@ def init(screen):
     player1_text = font_h1.render("Player 1's board", True, "#FFFFFF")
     player2_text = font_h1.render("Player 2's board", True, "#FFFFFF")
 
-    # ships for palyer 1
-    # list of [[ships_img], [ships_rect], [if picked], [number of rotations], [if sunk]]
+    # ship data for palyer 1
+    # list of [[ships_img], [ships_rect], [if_picked], [number_of_rotations], [if_sunk]]
     # initial 10 px between each ship
     ships_p1 = [
         [
@@ -69,8 +69,8 @@ def init(screen):
         [False, False, False, False, False],
     ]
 
-    # ships for palyer 2
-    # list of [[ships_img], [ships_rect], [if picked], [number of rotations], [if sunk]]
+    # ship data for palyer 1
+    # list of [[ships_img], [ships_rect], [if_picked], [number_of_rotations], [if_sunk]]
     # initial 10 px between each ship
     ships_p2 = [
         [
@@ -96,8 +96,8 @@ def init(screen):
     # for testing P1 and P2 are set
     P1 = [
         [
-            "----",
-            "----",
+            "hit-",
+            "miss",
             "----",
             "----",
             "----",
@@ -351,34 +351,22 @@ def set_ships(screen):
 
     PICKED = False  # variable for drag and drop
 
-    # grid (599 x 599)
+    # grid rects (599 x 599)
     grid_p1 = grid_img.get_rect(center=(439, 359))
     grid_p2 = grid_img.get_rect(center=(1059, 359))
-    # print(
-    #     f"grid p1 left {grid_p1.left} right {grid_p1.right} top {grid_p1.top} bottom {grid_p1.bottom}"
-    # )
-    # print(
-    #     f"grid p2left {grid_p2.left} right {grid_p2.right} top {grid_p2.top} bottom {grid_p2.bottom}"
-    # )
 
-    # parchment (122 x 590)
+    # parchment rects (122 x 590)
     parchment_p1 = parchment_img.get_rect(center=(71, 365))
     parchment_p2 = parchment_img.get_rect(center=(1428, 365))
-    # print(
-    #     f"parchment p1 left {parchment_p1.left} right {parchment_p1.right} top {parchment_p1.top} bottom {parchment_p1.bottom}"
-    # )
-    # print(
-    #     f"parchment p2 left {parchment_p2.left} right {parchment_p2.right} top {parchment_p2.top} bottom {parchment_p2.bottom}"
-    # )
 
-    # validate text
+    # "validate" text
     validate_text = font_h2.render("Validate", True, "#FFFFFF")
 
-    # validate button for player 1
+    # validate button rect for player 1
     validate_p1 = pygame.Rect((0, 0), (115, 35))
     validate_p1.center = 650, 680
 
-    # validate button for player 2
+    # validate button rect for player 2
     validate_p2 = pygame.Rect((0, 0), (115, 35))
     validate_p2.center = 1240, 680
 
@@ -388,33 +376,31 @@ def set_ships(screen):
         # blits background
         screen.blit(background, (0, 0))
 
-        # blits grids and parchment for player 1
+        # blits grids and parchment for player 1 and 2
         screen.blit(grid_img, grid_p1)
-        screen.blit(parchment_img, parchment_p1)
-
-        # blits grids and parchment for player 2
         screen.blit(grid_img, grid_p2)
+        screen.blit(parchment_img, parchment_p1)
         screen.blit(parchment_img, parchment_p2)
 
-        # add player 1 and player 2 text
+        # blits player 1 and player 2 text
         screen.blit(player1_text, (313, 20))
         screen.blit(player2_text, (943, 20))
 
-        # differentiates the case for player 1 and player 2
+        # differentiates who's turn it is
         if WHO:
-            # adds ships for player 1
+            # blits ships for player 1
             for i in range(5):
                 screen.blit(ships_p1[0][i], ships_p1[1][i])
 
-            # button to validate
+            # blits button to validate
             pygame.draw.rect(screen, "#D74B4B", validate_p1, border_radius=12)
             screen.blit(validate_text, (600, 668))
         else:
-            # adds ships for player 2
+            # blits ships for player 1
             for i in range(5):
                 screen.blit(ships_p2[0][i], ships_p2[1][i])
 
-            # button to validate
+            # blits button to validate
             pygame.draw.rect(screen, "#D74B4B", validate_p2, border_radius=12)
             screen.blit(validate_text, (1190, 668))
 
@@ -424,19 +410,25 @@ def set_ships(screen):
         # event handler
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                # stop this while loop
                 run = False
+                # prevents other loop to start as pygame.quit() is called just after this while loop
                 RUN = False
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1 and not PICKED:
+                if event.button == 1:
+
                     # to make sure only one ship is picked
                     picked_one = False
-                    # checks if mouse on ship
+
+                    # checks which ships is clicked and snaps its position to mouse
                     for i in range(5):
+                        # for player 1
                         if WHO and ships_p1[1][i].collidepoint(pos) and not picked_one:
                             ships_p1[1][i].center = pos
                             ships_p1[2][i] = True
                             picked_one = True
+                        # for player 2
                         elif (
                             not WHO
                             and ships_p2[1][i].collidepoint(pos)
@@ -447,16 +439,16 @@ def set_ships(screen):
                             picked_one = True
                     PICKED = True
 
-                    # checks if player 1 turn and  mouse on validate button
+                    # checks if it's player 1's turn and mouse is on validate button
                     if WHO and validate_p1.collidepoint(pos):
-                        valid = validate(grid_p1, ships_p1)
+                        valid = validate(ships_p1, grid_p1)
                         if not valid:
                             show_error(screen)
                         else:
                             WHO = False
 
                     elif not WHO and validate_p2.collidepoint(pos):
-                        valid = validate(grid_p2, ships_p2)
+                        valid = validate(ships_p2, grid_p2)
                         if not valid:
                             show_error(screen)
                         else:
@@ -549,7 +541,7 @@ def set_ships(screen):
 
 
 def play_game(screen):
-    global background, grid_img, font_h1, font_h2, player1_text, player2_text
+    global background, grid_img, font_h1, font_h2, player1_text, player2_text, circle_img, cross_img
     global ships_p1, ships_p2
     global P1, P2, WHO, RUN
     # global SIZE
@@ -561,6 +553,10 @@ def play_game(screen):
     # torpedo (182 x 58)
     torpedo_img = pygame.image.load("./img/torpedo.png")
     torpedo = torpedo_img.get_rect(center=(750, 359))
+
+    # cirlce and cross img
+    circle_img = pygame.image.load("./img/circle.png")
+    cross_img = pygame.image.load("./img/cross2.png")
 
     # blits all the circles and crosses on hits or misses for both players
     show_if_hit(screen)
@@ -597,10 +593,11 @@ def play_game(screen):
                     if WHO and grid_p1.collidepoint(pos):
                         # converts mouse position as coordinates of a matrice
                         coord = mouse_to_coord(pos, grid_p1)
-                        show_if_hit(coord, P1, grid_p1, screen)
+                        update_matrice(coord, P1)
                     elif not WHO and grid_p2.collidepoint(pos):
                         # converts mouse position as coordinates of a matrice
                         coord = mouse_to_coord(pos, grid_p2)
+                        update_matrice(coord, P2)
 
         pygame.display.update()
 
@@ -630,10 +627,12 @@ def snap(grid, ships, id):
     return (coord_x, coord_y)
 
 
-def validate(grid, ships):
+def validate(ships, grid):
     global P1, P2, WHO
     valid = True
-    # checks center of ships are on grid
+
+    """DO I NEED 2 CHECKS OR JUST ONE"""
+    # checks if center of ships are on grid
     for i in range(5):
         if not grid.collidepoint(ships[1][i].center):
             valid = False
@@ -643,25 +642,23 @@ def validate(grid, ships):
         for i in range(5):
             if ships[1][i].left < grid.left:
                 valid = False
-                print("rigth")
+            # add + 1 as grid is (599 x 599)
             elif ships[1][i].right > grid.right + 1:
                 valid = False
-                print("more left")
             elif ships[1][i].top < grid.top:
                 valid = False
-                print("more down")
+            # add + 1 as grid is (599 x 599)
             elif ships[1][i].bottom > grid.bottom + 1:
                 valid = False
-                print("top")
 
     if valid:
-        to_mat(grid, ships)
+        to_mat(ships, grid)
     else:
         print("Not all ships are on the grid")
 
     # if number of ships < 17 -> ships are on top of each other
     if num_ships() < 17:
-        # resets players matrice with nothing on it
+        # resets players matrice as blank
         if WHO:
             P1 = [["----" for x in range(10)] for x in range(10)]
         else:
@@ -672,9 +669,10 @@ def validate(grid, ships):
     return valid
 
 
-def to_mat(grid, ships):
+def to_mat(ships, grid):
     global P1, P2, WHO
 
+    # determines which matrice is being changed
     if WHO:
         mat = P1
     else:
@@ -683,8 +681,8 @@ def to_mat(grid, ships):
     g_x = grid.left
     g_y = grid.top
 
-    # checks for if player 1w
     for i in range(5):
+        # gets ship center
         x = ships[1][i].center[0]
         y = ships[1][i].center[1]
 
@@ -719,7 +717,7 @@ def to_mat(grid, ships):
             if rotated:
                 coord_x = (x - g_x) // 60 - 1
                 coord_y = (y - g_y) // 60
-                # checks if ships has 2 parts to the right
+                # checks if the battleship (4 long) is longer to the right or left
                 if (ships_p1[3][3] - 1) % 2 == 0:
                     mat[coord_x - 1][coord_y] = "ship"
                     mat[coord_x][coord_y] = "ship"
@@ -752,9 +750,9 @@ def to_mat(grid, ships):
                 mat[coord_x][coord_y] = "ship"
                 mat[coord_x][coord_y + 1] = "ship"
                 mat[coord_x][coord_y + 2] = "ship"
-    show_mat(mat)
 
 
+# prints a matrice
 def show_mat(m):
     for i in range(10):
         for j in range(10):
@@ -763,6 +761,7 @@ def show_mat(m):
     print("\n")
 
 
+# counts the number of ships on the respective players grid
 def num_ships():
     global P1, P2, WHO
 
@@ -770,6 +769,7 @@ def num_ships():
         mat = P1
     else:
         mat = P2
+
     counter = 0
     for i in range(10):
         for j in range(10):
@@ -778,14 +778,17 @@ def num_ships():
     return counter
 
 
+# blits error_img centered on the screen 3 times with delay in between
 def show_error(screen):
-    global error_img, error_img_2, error_img_3
+    global error_img, error_img_2, error_img_3, SIZE
+
     screen.blit(
         error_img,
         (SIZE[0] / 2 - 1000 / 2, SIZE[1] / 2 - 600 / 2),
     )
     pygame.display.update()
     pygame.time.wait(150)
+
     screen.blit(
         error_img_2,
         (
@@ -795,6 +798,7 @@ def show_error(screen):
     )
     pygame.display.update()
     pygame.time.wait(150)
+
     screen.blit(
         error_img_3,
         (
@@ -806,6 +810,7 @@ def show_error(screen):
     pygame.time.wait(150)
 
 
+# returns the matrice coordinates the mouse is on depending on which grid is inputed
 def mouse_to_coord(pos, grid):
     g_x = grid.left
     g_y = grid.top
@@ -816,20 +821,42 @@ def mouse_to_coord(pos, grid):
     return (coord_x, coord_y)
 
 
+# returns the top left of the square on the respective grid
+def coord_to_pos(coord, grid_left_top):
+    g_x = grid_left_top[0]
+    g_y = grid_left_top[1]
+
+    pos_x = coord[0] * 60 + g_x
+    pos_y = coord[1] * 60 + g_y
+
+    return (pos_x, pos_y)
+
+
+# blits all circles (miss) and crosses (hit) on both grids
 def show_if_hit(screen):
-    for i in range(5):
-        pass
+    global circle_img, cross_img
+    global P1, P2
+    for i in range(10):
+        for j in range(10):
+            if P1[i][j] == "hit-":
+                screen.blit(cross_img, coord_to_pos((j, i), (10, 60)))
+                print("hit")
+            elif P1[i][j] == "miss":
+                screen.blit(circle_img, coord_to_pos((j, i), (10, 60)))
+                print("misss")
 
 
-def change_matrice(coord, mat):
+# update the players matrice at the coords inputed
+def update_matrice(coord, mat):
     coord_x = coord[0]
     coord_y = coord[1]
 
     value = mat[coord_x][coord_y]
     if value == "ship":
-        mat[coord_x][coord_y] = "hit "
+        mat[coord_x][coord_y] = "hit-"
     elif value == "----":
         mat[coord_x][coord_y] = "miss"
+    show_mat(mat)
 
 
 # sets up the display for solo testing
