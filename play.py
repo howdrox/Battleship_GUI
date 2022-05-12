@@ -1,4 +1,4 @@
-"""play_friend.py: Multiplayer battleship game 1v1"""
+"""play.py: multiplayer battleship game"""
 
 
 import pygame
@@ -92,14 +92,50 @@ def init(screen):
         [False, False, False, False, False],
     ]
 
-    # set_ships(screen)
+    set_ships(screen)
     # for testing P1 and P2 are set
     P1 = [
         [
-            "hit-",
-            "miss",
             "----",
             "----",
+            "----",
+            "ship",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+        ],
+        [
+            "----",
+            "----",
+            "----",
+            "ship",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+        ],
+        [
+            "----",
+            "----",
+            "----",
+            "ship",
+            "----",
+            "ship",
+            "ship",
+            "ship",
+            "----",
+            "----",
+        ],
+        [
+            "----",
+            "ship",
+            "----",
+            "ship",
             "----",
             "----",
             "----",
@@ -114,43 +150,7 @@ def init(screen):
             "----",
             "----",
             "----",
-            "ship",
-            "ship",
-            "ship",
             "----",
-        ],
-        [
-            "----",
-            "ship",
-            "----",
-            "----",
-            "----",
-            "----",
-            "ship",
-            "----",
-            "----",
-            "----",
-        ],
-        [
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "ship",
-            "----",
-            "----",
-            "----",
-        ],
-        [
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "ship",
             "----",
             "----",
             "----",
@@ -164,6 +164,18 @@ def init(screen):
             "----",
             "----",
             "----",
+            "----",
+            "----",
+        ],
+        [
+            "----",
+            "----",
+            "----",
+            "----",
+            "ship",
+            "ship",
+            "ship",
+            "ship",
             "ship",
             "----",
         ],
@@ -176,31 +188,19 @@ def init(screen):
             "----",
             "----",
             "----",
-            "ship",
             "----",
-        ],
-        [
-            "----",
-            "ship",
-            "ship",
-            "ship",
-            "ship",
-            "----",
-            "----",
-            "----",
-            "ship",
             "----",
         ],
         [
             "----",
             "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
             "ship",
+            "ship",
+            "ship",
+            "----",
+            "----",
+            "----",
+            "----",
             "----",
         ],
         [
@@ -212,7 +212,7 @@ def init(screen):
             "----",
             "----",
             "----",
-            "ship",
+            "----",
             "----",
         ],
     ]
@@ -237,7 +237,55 @@ def init(screen):
             "----",
             "----",
             "----",
+            "ship",
             "----",
+            "----",
+        ],
+        [
+            "----",
+            "----",
+            "----",
+            "----",
+            "ship",
+            "----",
+            "----",
+            "ship",
+            "----",
+            "----",
+        ],
+        [
+            "----",
+            "----",
+            "----",
+            "----",
+            "ship",
+            "----",
+            "----",
+            "ship",
+            "----",
+            "----",
+        ],
+        [
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
+            "ship",
+            "----",
+            "----",
+        ],
+        [
+            "----",
+            "----",
+            "----",
+            "ship",
+            "ship",
+            "ship",
+            "----",
+            "ship",
             "----",
             "----",
         ],
@@ -257,8 +305,20 @@ def init(screen):
             "----",
             "----",
             "----",
+            "----",
+            "----",
             "ship",
+            "----",
+            "----",
             "ship",
+            "----",
+        ],
+        [
+            "----",
+            "----",
+            "----",
+            "----",
+            "----",
             "ship",
             "----",
             "----",
@@ -271,70 +331,10 @@ def init(screen):
             "----",
             "----",
             "----",
-            "----",
-            "----",
-            "----",
-            "ship",
-            "----",
-        ],
-        [
-            "----",
-            "----",
-            "----",
-            "----",
-            "ship",
             "ship",
             "----",
             "----",
             "ship",
-            "----",
-        ],
-        [
-            "----",
-            "ship",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-        ],
-        [
-            "----",
-            "ship",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-        ],
-        [
-            "----",
-            "ship",
-            "----",
-            "----",
-            "ship",
-            "ship",
-            "ship",
-            "ship",
-            "ship",
-            "----",
-        ],
-        [
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
             "----",
         ],
     ]
@@ -349,7 +349,8 @@ def set_ships(screen):
     global P1, P2, WHO, RUN
     global SIZE
 
-    PICKED = False  # variable for drag and drop
+    # variable for drag and drop
+    PICKED = False
 
     # grid rects (599 x 599)
     grid_p1 = grid_img.get_rect(center=(439, 359))
@@ -416,28 +417,35 @@ def set_ships(screen):
                 RUN = False
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
+
+                # left button
                 if event.button == 1:
+                    if not PICKED:
+                        # to make sure only one ship is picked
+                        picked_one = False
 
-                    # to make sure only one ship is picked
-                    picked_one = False
-
-                    # checks which ships is clicked and snaps its position to mouse
-                    for i in range(5):
-                        # for player 1
-                        if WHO and ships_p1[1][i].collidepoint(pos) and not picked_one:
-                            ships_p1[1][i].center = pos
-                            ships_p1[2][i] = True
-                            picked_one = True
-                        # for player 2
-                        elif (
-                            not WHO
-                            and ships_p2[1][i].collidepoint(pos)
-                            and not picked_one
-                        ):
-                            ships_p2[1][i].center = pos
-                            ships_p2[2][i] = True
-                            picked_one = True
-                    PICKED = True
+                        # checks which ships is clicked and snaps its position to mouse
+                        for i in range(5):
+                            # for player 1
+                            if (
+                                WHO
+                                and ships_p1[1][i].collidepoint(pos)
+                                and not picked_one
+                            ):
+                                ships_p1[1][i].center = pos
+                                ships_p1[2][i] = True
+                                picked_one = True
+                                PICKED = True
+                            # for player 2
+                            elif (
+                                not WHO
+                                and ships_p2[1][i].collidepoint(pos)
+                                and not picked_one
+                            ):
+                                ships_p2[1][i].center = pos
+                                ships_p2[2][i] = True
+                                picked_one = True
+                                PICKED = True
 
                     # checks if it's player 1's turn and mouse is on validate button
                     if WHO and validate_p1.collidepoint(pos):
@@ -455,7 +463,9 @@ def set_ships(screen):
                             WHO = True
                             run = False
 
+                # right button
                 elif event.button == 3:
+                    # rotates the image if the ship which is being picked
                     for i in range(5):
                         if ships_p1[2][i] == True:
                             # rotates image
@@ -466,7 +476,7 @@ def set_ships(screen):
                             ships_p1[1][i] = ships_p1[0][i].get_rect()
                             # sets center of new rect
                             ships_p1[1][i].center = position
-                            # counts the number of rotation
+                            # adds one to the ships number of rotation
                             ships_p1[3][i] += 1
                         elif ships_p2[2][i] == True:
                             # rotates image
@@ -477,21 +487,23 @@ def set_ships(screen):
                             ships_p2[1][i] = ships_p2[0][i].get_rect()
                             # sets center of new rect
                             ships_p2[1][i].center = position
-                            # counts the number of rotation
+                            # adds one to the ships number of rotation
                             ships_p2[3][i] += 1
 
             elif event.type == pygame.MOUSEBUTTONUP:
-                if event.button == 1 and PICKED:
-                    for i in range(5):
-                        if ships_p1[2][i] == True:
-                            ships_p1[2][i] = False
-                            # snaps ship in place
-                            ships_p1[1][i].center = snap(grid_p1, ships_p1, i)
-                        elif ships_p2[2][i] == True:
-                            ships_p2[2][i] = False
-                            # snaps ships in place
-                            ships_p2[1][i].center = snap(grid_p2, ships_p2, i)
-                    PICKED = False
+                # if right button
+                if event.button == 1:
+                    if PICKED:
+                        for i in range(5):
+                            if ships_p1[2][i] == True:
+                                ships_p1[2][i] = False
+                                # snaps ship in place
+                                ships_p1[1][i].center = snap(grid_p1, ships_p1, i)
+                            elif ships_p2[2][i] == True:
+                                ships_p2[2][i] = False
+                                # snaps ships in place
+                                ships_p2[1][i].center = snap(grid_p2, ships_p2, i)
+                        PICKED = False
 
             elif event.type == pygame.MOUSEMOTION:
                 # checks if a ship is picked
@@ -510,6 +522,7 @@ def set_ships(screen):
 
             elif event.type == pygame.MOUSEWHEEL:
                 if event.y != 0:
+                    # rotates the image if the ship which is being picked
                     for i in range(5):
                         if ships_p1[2][i] == True:
                             # rotates image
@@ -520,7 +533,7 @@ def set_ships(screen):
                             ships_p1[1][i] = ships_p1[0][i].get_rect()
                             # sets center of new rect
                             ships_p1[1][i].center = position
-                            # counts the number of rotation
+                            # adds one to the ships number of rotation
                             ships_p1[3][i] += 1
                         elif ships_p2[2][i] == True:
                             # rotates image
@@ -531,11 +544,11 @@ def set_ships(screen):
                             ships_p2[1][i] = ships_p2[0][i].get_rect()
                             # sets center of new rect
                             ships_p2[1][i].center = position
-                            # counts the number of rotation
+                            # adds one to the ships number of rotation
                             ships_p2[3][i] += 1
 
         pygame.display.update()
-    ### NEED TO FIGURE OUT HOW TO QUIT
+
     if not RUN:
         pygame.quit()
 
@@ -602,6 +615,7 @@ def play_game(screen):
         pygame.display.update()
 
 
+# snaps the ships position to the nearest square
 def snap(grid, ships, id):
     position = ships[1][id].center
     g_x = grid.left
@@ -810,6 +824,10 @@ def show_error(screen):
     )
     pygame.display.update()
     pygame.time.wait(150)
+
+
+def rotate_ship():
+    pass
 
 
 # returns the matrice coordinates the mouse is on depending on which grid is inputed
