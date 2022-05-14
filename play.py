@@ -2,6 +2,7 @@
 
 ### NEED TO ADD -> SO THAT YOU CANNOT CLICK THE SAME SQUARE TWICE
 
+from pickle import FALSE
 import pygame
 
 # loads all the necessary things then calls set_ships() to allow the users to position their ships
@@ -9,7 +10,7 @@ import pygame
 def init(screen):
     global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text, error_img, error_img_2, error_img_3
     global ships_p1, ships_p2
-    global P1, P2, WHO, RUN
+    global P1, P2, WHO, RUN, GAMEOVER
 
     P1 = [["----" for x in range(10)] for x in range(10)]
     P2 = [["----" for x in range(10)] for x in range(10)]
@@ -17,6 +18,8 @@ def init(screen):
     WHO = True
     # global variable if pygame should be running
     RUN = True
+    # if someone won
+    GAMEOVER = False
 
     # background image
     background = pygame.image.load("./img/background3.jpg")
@@ -512,7 +515,7 @@ def set_ships(screen):
 def play_game(screen):
     global background, grid_img, font_h1, font_h2, player1_text, player2_text, circle_img, cross_img, torpedo_img, torpedo
     global ships_p1, ships_p2
-    global P1, P2, WHO, RUN
+    global P1, P2, WHO, RUN, GAMEOVER
     # global SIZE
 
     # grid (599 x 599)
@@ -551,32 +554,40 @@ def play_game(screen):
 
         pos = pygame.mouse.get_pos()
 
+        # shows who won
+        if GAMEOVER:
+            show_winner(screen, grid_p1, grid_p2)
+
         # event handler
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-                RUN = False
+                # RUN = False
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    if WHO and grid_p1.collidepoint(pos):
+                    # to store if mouse on a grid
+                    on_grid = False
+
+                    if WHO and grid_p1.collidepoint(pos) and not GAMEOVER:
+                        grid = grid_p1
+                        mat = P2
+                        on_grid = True
+                    elif not WHO and grid_p2.collidepoint(pos) and not GAMEOVER:
+                        grid = grid_p2
+                        mat = P1
+                        on_grid = True
+
+                    if on_grid:
                         # converts mouse position as coordinates of a matrice
-                        coord = mouse_to_coord(pos, grid_p1)
-                        updated = update_matrice(coord, P2)
+                        coord = mouse_to_coord(pos, grid)
+                        updated = update_matrice(coord, mat)
                         if updated:
-                            if_won()
-                            # changes the player's turn
-                            WHO = False
-                        else:
-                            show_error(screen)
-                    elif not WHO and grid_p2.collidepoint(pos):
-                        # converts mouse position as coordinates of a matrice
-                        coord = mouse_to_coord(pos, grid_p2)
-                        updated = update_matrice(coord, P1)
-                        if updated:
-                            if_won()
-                            # changes the player's turn
-                            WHO = True
+                            if if_won():
+                                GAMEOVER = True
+                            else:
+                                # changes the player's turn
+                                WHO = not WHO
                         else:
                             show_error(screen)
 
@@ -905,12 +916,48 @@ def if_won():
     else:
         hits = num_of("hit-", P1)
 
-    # if hits is 17 then game finished
+    # if number of hits is 17 then game finished
     if hits == 17:
         won = True
 
-    print(won)
     return won
+
+
+def show_winner(screen, grid_p1, grid_p2):
+    global WHO, GAMEOVER
+    # translucent banner
+    banner = pygame.Surface((1500, 200))
+    banner.set_alpha(128)
+    banner.fill("#000000")
+
+    # won image (180 x 180)
+    win = pygame.image.load("./img/win2.png")
+
+    # KO image (398 x 180)
+    ko = pygame.image.load("./img/KO2.png")
+
+    if WHO:
+        grid_winner = grid_p1
+        grid_loser = grid_p2
+    else:
+        grid_winner = grid_p2
+        grid_loser = grid_p1
+
+    screen.blit(banner, (0, 360 - (200 / 2)))
+    screen.blit(
+        ko,
+        (
+            grid_loser.center[0] - ko.get_width() / 2,
+            grid_loser.center[1] - ko.get_height() / 2,
+        ),
+    )
+    screen.blit(
+        win,
+        (
+            grid_winner.center[0] - win.get_width() / 2,
+            grid_winner.center[1] - win.get_height() / 2,
+        ),
+    )
 
 
 # sets up the display for solo testing
