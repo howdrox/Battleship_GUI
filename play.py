@@ -8,19 +8,21 @@ import pygame
 
 # loads all the necessary things then calls set_ships() to allow the users to position their ships
 # note: loads only things that are needed for all funcitons and stages of the game
-def init(screen):
+def init(screen, computer):
     global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text, error_img, error_img_2, error_img_3
     global ships_p1, ships_p2
-    global P1, P2, WHO, RUN, GAMEOVER
+    global P1, P2, WHO, not_closed, GAMEOVER, COMPUTER
 
     P1 = [["----" for x in range(10)] for x in range(10)]
     P2 = [["----" for x in range(10)] for x in range(10)]
     # who's turn it is with True being player 1
     WHO = True
     # global variable if pygame should be running
-    RUN = True
+    not_closed = True
     # if someone won
     GAMEOVER = False
+    # if against computer
+    COMPUTER = computer
 
     # background image
     background = pygame.image.load("./img/background3.jpg")
@@ -29,7 +31,7 @@ def init(screen):
     grid_img = pygame.image.load("./img/grid_white.png")
 
     # parchment image (122 x 590)
-    parchment_img = pygame.image.load("./img/parchment.png")
+    parchment_img = pygame.image.load("./img/parchment2.png")
 
     # ships images
     destroyer_img = pygame.image.load("./img/destroyer2.png")
@@ -52,7 +54,7 @@ def init(screen):
     player2_text = font_h1.render("Player 2's board", True, "#FFFFFF")
 
     # ship data for palyer 1
-    # list of [[ships_img], [ships_rect], [if_picked], [number_of_rotations], [if_sunk]]
+    # list of [[ships_img], [ships_rect], [if_picked], [number_of_rotations]]
     # initial 10 px between each ship
     ships_p1 = [
         [
@@ -71,11 +73,10 @@ def init(screen):
         ],
         [False, False, False, False, False],
         [0, 0, 0, 0, 0],
-        [False, False, False, False, False],
     ]
 
     # ship data for palyer 1
-    # list of [[ships_img], [ships_rect], [if_picked], [number_of_rotations], [if_sunk]]
+    # list of [[ships_img], [ships_rect], [if_picked], [number_of_rotations]]
     # initial 10 px between each ship
     ships_p2 = [
         [
@@ -94,7 +95,6 @@ def init(screen):
         ],
         [False, False, False, False, False],
         [0, 0, 0, 0, 0],
-        [False, False, False, False, False],
     ]
 
     # set_ships(screen)
@@ -344,14 +344,14 @@ def init(screen):
         ],
     ]
     # checks if the window was closed, if not then continue
-    if RUN:
+    if not_closed:
         play_game(screen)
 
 
 def set_ships(screen):
     global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text
     global ships_p1, ships_p2
-    global P1, P2, WHO, RUN
+    global P1, P2, WHO, not_closed, COMPUTER
     global SIZE
 
     # variable for drag and drop
@@ -401,7 +401,8 @@ def set_ships(screen):
             # blits button to validate
             pygame.draw.rect(screen, "#D74B4B", validate_p1, border_radius=12)
             screen.blit(validate_text, (600, 668))
-        else:
+        # if its player 2's turn and not against a computer
+        elif not COMPUTER and not WHO:
             # blits ships for player 1
             for i in range(5):
                 screen.blit(ships_p2[0][i], ships_p2[1][i])
@@ -409,6 +410,7 @@ def set_ships(screen):
             # blits button to validate
             pygame.draw.rect(screen, "#D74B4B", validate_p2, border_radius=12)
             screen.blit(validate_text, (1190, 668))
+
 
         # gets mouse position
         pos = pygame.mouse.get_pos()
@@ -419,7 +421,7 @@ def set_ships(screen):
                 # stop this while loop
                 run = False
                 # prevents other loop to start as pygame.quit() is called just after this while loop
-                RUN = False
+                not_closed = False
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
 
@@ -451,16 +453,23 @@ def set_ships(screen):
                                 ships_p2[2][i] = True
                                 picked_one = True
                                 PICKED = True
-
+                    
                     # checks if it's player 1's turn and mouse is on validate button
                     if WHO and validate_p1.collidepoint(pos):
                         valid = validate(ships_p1, grid_p1)
                         if not valid:
                             show_error(screen)
                         else:
-                            WHO = False
+                            if not COMPUTER:
+                                WHO = False
+                            else:
+                                # P2 = bot.set_ship()
+                                P2 = []
+                                # stops the phase of setting up ships
+                                run = False
+                                
 
-                    elif not WHO and validate_p2.collidepoint(pos):
+                    elif not WHO and validate_p2.collidepoint(pos) and not COMPUTER:
                         valid = validate(ships_p2, grid_p2)
                         if not valid:
                             show_error(screen)
@@ -509,14 +518,14 @@ def set_ships(screen):
 
         pygame.display.update()
 
-    if not RUN:
+    if not not_closed:
         pygame.quit()
 
 
 def play_game(screen):
     global background, grid_img, font_h1, font_h2, player1_text, player2_text, circle_img, cross_img, torpedo_img, torpedo, click_to
     global ships_p1, ships_p2
-    global P1, P2, WHO, RUN, GAMEOVER
+    global P1, P2, WHO, not_closed, GAMEOVER
     # global SIZE
 
     # grid (599 x 599)
@@ -532,7 +541,7 @@ def play_game(screen):
     cross_img = pygame.image.load("./img/cross2.png")
 
     # click to continue text
-    click_to = font_h1.render("Click to continue.", True, "#FFFFFF")
+    click_to = font_h1.render("Click to return to main menu.", True, "#FFFFFF")
 
     # game loop
     run = True
@@ -566,7 +575,6 @@ def play_game(screen):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-                # RUN = False
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -580,14 +588,23 @@ def play_game(screen):
                         grid = grid_p1
                         mat = P2
                         on_grid = True
-                    elif not WHO and grid_p2.collidepoint(pos) and not GAMEOVER:
+                    elif not WHO and grid_p2.collidepoint(pos) and not COMPUTER and not GAMEOVER:
                         grid = grid_p2
                         mat = P1
                         on_grid = True
+                    # if against computer and computer's turn
+                    elif not WHO and COMPUTER and not GAMEOVER:
+                        grid = P1
+                        on_grid = True  # so that computer can guess, calls bot.guess() funciton in next if
+
 
                     if on_grid:
-                        # converts mouse position as coordinates of a matrice
-                        coord = mouse_to_coord(pos, grid)
+                        if not COMPUTER:
+                            # converts mouse position as coordinates of a matrice
+                            coord = mouse_to_coord(pos, grid)
+                        else:
+                            # coord = bot.guess()
+                            pass
                         updated = update_matrice(coord, mat)
                         if updated:
                             if if_won():
@@ -938,7 +955,7 @@ def show_winner(screen, grid_p1, grid_p2):
     banner.fill("#000000")
 
     # won image (180 x 180)
-    win = pygame.image.load("./img/win2.png")
+    win = pygame.image.load("./img/win3.png")
 
     # KO image (398 x 180)
     ko = pygame.image.load("./img/KO2.png")
@@ -983,7 +1000,7 @@ def main():
     icon = pygame.image.load("./img/icon.png")
     pygame.display.set_icon(icon)
 
-    init(screen)
+    init(screen, False)
 
 
 if __name__ == "__main__":
