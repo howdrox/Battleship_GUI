@@ -2,12 +2,11 @@
 
 Battleship game with GUI using pygame
 
-## Menus
+## Files
 
 - Main menu: `main.py`
-- Settings menu: `settings_menu.py`
-- Playing with friend: `play_friend.py`
-- Play against computer: `play_computer.py`
+- Play: `play.py`
+- Bot brains: `bot.py`
 
 <br>
 <br>
