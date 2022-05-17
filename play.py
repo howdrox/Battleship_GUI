@@ -3,6 +3,7 @@
 ### NEED TO ADD -> SO THAT YOU CANNOT CLICK THE SAME SQUARE TWICE
 
 from pickle import FALSE
+from telnetlib import GA
 import pygame
 
 # loads all the necessary things then calls set_ships() to allow the users to position their ships
@@ -513,7 +514,7 @@ def set_ships(screen):
 
 
 def play_game(screen):
-    global background, grid_img, font_h1, font_h2, player1_text, player2_text, circle_img, cross_img, torpedo_img, torpedo
+    global background, grid_img, font_h1, font_h2, player1_text, player2_text, circle_img, cross_img, torpedo_img, torpedo, click_to
     global ships_p1, ships_p2
     global P1, P2, WHO, RUN, GAMEOVER
     # global SIZE
@@ -529,6 +530,9 @@ def play_game(screen):
     # cirlce and cross img (50 x 50)
     circle_img = pygame.image.load("./img/circle.png")
     cross_img = pygame.image.load("./img/cross2.png")
+
+    # click to continue text
+    click_to = font_h1.render("Click to continue.", True, "#FFFFFF")
 
     # game loop
     run = True
@@ -566,6 +570,9 @@ def play_game(screen):
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
+                    if GAMEOVER:
+                        run = False
+
                     # to store if mouse on a grid
                     on_grid = False
 
@@ -924,7 +931,7 @@ def if_won():
 
 
 def show_winner(screen, grid_p1, grid_p2):
-    global WHO, GAMEOVER
+    global WHO, GAMEOVER, click_to
     # translucent banner
     banner = pygame.Surface((1500, 200))
     banner.set_alpha(128)
@@ -958,6 +965,7 @@ def show_winner(screen, grid_p1, grid_p2):
             grid_winner.center[1] - win.get_height() / 2,
         ),
     )
+    screen.blit(click_to, (750 - click_to.get_width() / 2, 460 - click_to.get_height()))
 
 
 # sets up the display for solo testing
