@@ -1,10 +1,8 @@
 """play.py: multiplayer battleship game"""
 
-### NEED TO ADD -> SO THAT YOU CANNOT CLICK THE SAME SQUARE TWICE
 
-from pickle import FALSE
-from telnetlib import GA
 import pygame
+import bot
 
 # loads all the necessary things then calls set_ships() to allow the users to position their ships
 # note: loads only things that are needed for all funcitons and stages of the game
@@ -97,252 +95,252 @@ def init(screen, computer):
         [0, 0, 0, 0, 0],
     ]
 
-    # set_ships(screen)
+    set_ships(screen)
     # for testing P1 and P2 are set
-    P1 = [
-        [
-            "----",
-            "----",
-            "----",
-            "ship",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-        ],
-        [
-            "----",
-            "----",
-            "----",
-            "ship",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-        ],
-        [
-            "----",
-            "----",
-            "----",
-            "ship",
-            "----",
-            "ship",
-            "ship",
-            "ship",
-            "----",
-            "----",
-        ],
-        [
-            "----",
-            "ship",
-            "----",
-            "ship",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-        ],
-        [
-            "----",
-            "ship",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-        ],
-        [
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-        ],
-        [
-            "----",
-            "----",
-            "----",
-            "----",
-            "ship",
-            "ship",
-            "ship",
-            "ship",
-            "ship",
-            "----",
-        ],
-        [
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-        ],
-        [
-            "----",
-            "----",
-            "ship",
-            "ship",
-            "ship",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-        ],
-        [
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-        ],
-    ]
-    P2 = [
-        [
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-        ],
-        [
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "ship",
-            "----",
-            "----",
-        ],
-        [
-            "----",
-            "----",
-            "----",
-            "----",
-            "ship",
-            "----",
-            "----",
-            "ship",
-            "----",
-            "----",
-        ],
-        [
-            "----",
-            "----",
-            "----",
-            "----",
-            "ship",
-            "----",
-            "----",
-            "ship",
-            "----",
-            "----",
-        ],
-        [
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "ship",
-            "----",
-            "----",
-        ],
-        [
-            "----",
-            "----",
-            "----",
-            "ship",
-            "ship",
-            "ship",
-            "----",
-            "ship",
-            "----",
-            "----",
-        ],
-        [
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "ship",
-            "----",
-        ],
-        [
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "ship",
-            "----",
-            "----",
-            "ship",
-            "----",
-        ],
-        [
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "ship",
-            "----",
-            "----",
-            "ship",
-            "----",
-        ],
-        [
-            "----",
-            "----",
-            "----",
-            "----",
-            "----",
-            "ship",
-            "----",
-            "----",
-            "ship",
-            "----",
-        ],
-    ]
+    # P1 = [
+    #     [
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "ship",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #     ],
+    #     [
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "ship",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #     ],
+    #     [
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "ship",
+    #         "----",
+    #         "ship",
+    #         "ship",
+    #         "ship",
+    #         "----",
+    #         "----",
+    #     ],
+    #     [
+    #         "----",
+    #         "ship",
+    #         "----",
+    #         "ship",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #     ],
+    #     [
+    #         "----",
+    #         "ship",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #     ],
+    #     [
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #     ],
+    #     [
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "ship",
+    #         "ship",
+    #         "ship",
+    #         "ship",
+    #         "ship",
+    #         "----",
+    #     ],
+    #     [
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #     ],
+    #     [
+    #         "----",
+    #         "----",
+    #         "ship",
+    #         "ship",
+    #         "ship",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #     ],
+    #     [
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #     ],
+    # ]
+    # P2 = [
+    #     [
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #     ],
+    #     [
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "ship",
+    #         "----",
+    #         "----",
+    #     ],
+    #     [
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "ship",
+    #         "----",
+    #         "----",
+    #         "ship",
+    #         "----",
+    #         "----",
+    #     ],
+    #     [
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "ship",
+    #         "----",
+    #         "----",
+    #         "ship",
+    #         "----",
+    #         "----",
+    #     ],
+    #     [
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "ship",
+    #         "----",
+    #         "----",
+    #     ],
+    #     [
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "ship",
+    #         "ship",
+    #         "ship",
+    #         "----",
+    #         "ship",
+    #         "----",
+    #         "----",
+    #     ],
+    #     [
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "ship",
+    #         "----",
+    #     ],
+    #     [
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "ship",
+    #         "----",
+    #         "----",
+    #         "ship",
+    #         "----",
+    #     ],
+    #     [
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "ship",
+    #         "----",
+    #         "----",
+    #         "ship",
+    #         "----",
+    #     ],
+    #     [
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "----",
+    #         "ship",
+    #         "----",
+    #         "----",
+    #         "ship",
+    #         "----",
+    #     ],
+    # ]
     # checks if the window was closed, if not then continue
     if not_closed:
         play_game(screen)
@@ -411,7 +409,6 @@ def set_ships(screen):
             pygame.draw.rect(screen, "#D74B4B", validate_p2, border_radius=12)
             screen.blit(validate_text, (1190, 668))
 
-
         # gets mouse position
         pos = pygame.mouse.get_pos()
 
@@ -453,7 +450,7 @@ def set_ships(screen):
                                 ships_p2[2][i] = True
                                 picked_one = True
                                 PICKED = True
-                    
+
                     # checks if it's player 1's turn and mouse is on validate button
                     if WHO and validate_p1.collidepoint(pos):
                         valid = validate(ships_p1, grid_p1)
@@ -463,11 +460,9 @@ def set_ships(screen):
                             if not COMPUTER:
                                 WHO = False
                             else:
-                                # P2 = bot.set_ship()
-                                P2 = []
+                                P2 = bot.set_ships()
                                 # stops the phase of setting up ships
                                 run = False
-                                
 
                     elif not WHO and validate_p2.collidepoint(pos) and not COMPUTER:
                         valid = validate(ships_p2, grid_p2)
@@ -588,22 +583,26 @@ def play_game(screen):
                         grid = grid_p1
                         mat = P2
                         on_grid = True
-                    elif not WHO and grid_p2.collidepoint(pos) and not COMPUTER and not GAMEOVER:
+                    elif (
+                        not WHO
+                        and grid_p2.collidepoint(pos)
+                        and not COMPUTER
+                        and not GAMEOVER
+                    ):
                         grid = grid_p2
                         mat = P1
                         on_grid = True
                     # if against computer and computer's turn
                     elif not WHO and COMPUTER and not GAMEOVER:
-                        grid = P1
+                        mat = P1
                         on_grid = True  # so that computer can guess, calls bot.guess() funciton in next if
-
 
                     if on_grid:
                         if not COMPUTER:
                             # converts mouse position as coordinates of a matrice
                             coord = mouse_to_coord(pos, grid)
                         else:
-                            # coord = bot.guess()
+                            coord = bot.guess(mat)
                             pass
                         updated = update_matrice(coord, mat)
                         if updated:
@@ -1000,7 +999,7 @@ def main():
     icon = pygame.image.load("./img/icon.png")
     pygame.display.set_icon(icon)
 
-    init(screen, False)
+    init(screen, True)
 
 
 if __name__ == "__main__":
