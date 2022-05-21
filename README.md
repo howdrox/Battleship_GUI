@@ -8,6 +8,10 @@ Battleship game with GUI using pygame
 - Play: `play.py`
 - Bot brains: `bot.py`
 
+## Requirements
+
+- Pygame
+
 <br>
 <br>
 <br>
