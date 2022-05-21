@@ -96,251 +96,6 @@ def init(screen, computer):
     ]
 
     set_ships(screen)
-    # for testing P1 and P2 are set
-    # P1 = [
-    #     [
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "ship",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #     ],
-    #     [
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "ship",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #     ],
-    #     [
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "ship",
-    #         "----",
-    #         "ship",
-    #         "ship",
-    #         "ship",
-    #         "----",
-    #         "----",
-    #     ],
-    #     [
-    #         "----",
-    #         "ship",
-    #         "----",
-    #         "ship",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #     ],
-    #     [
-    #         "----",
-    #         "ship",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #     ],
-    #     [
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #     ],
-    #     [
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "ship",
-    #         "ship",
-    #         "ship",
-    #         "ship",
-    #         "ship",
-    #         "----",
-    #     ],
-    #     [
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #     ],
-    #     [
-    #         "----",
-    #         "----",
-    #         "ship",
-    #         "ship",
-    #         "ship",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #     ],
-    #     [
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #     ],
-    # ]
-    # P2 = [
-    #     [
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #     ],
-    #     [
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "ship",
-    #         "----",
-    #         "----",
-    #     ],
-    #     [
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "ship",
-    #         "----",
-    #         "----",
-    #         "ship",
-    #         "----",
-    #         "----",
-    #     ],
-    #     [
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "ship",
-    #         "----",
-    #         "----",
-    #         "ship",
-    #         "----",
-    #         "----",
-    #     ],
-    #     [
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "ship",
-    #         "----",
-    #         "----",
-    #     ],
-    #     [
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "ship",
-    #         "ship",
-    #         "ship",
-    #         "----",
-    #         "ship",
-    #         "----",
-    #         "----",
-    #     ],
-    #     [
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "ship",
-    #         "----",
-    #     ],
-    #     [
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "ship",
-    #         "----",
-    #         "----",
-    #         "ship",
-    #         "----",
-    #     ],
-    #     [
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "ship",
-    #         "----",
-    #         "----",
-    #         "ship",
-    #         "----",
-    #     ],
-    #     [
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "----",
-    #         "ship",
-    #         "----",
-    #         "----",
-    #         "ship",
-    #         "----",
-    #     ],
-    # ]
     # checks if the window was closed, if not then continue
     if not_closed:
         play_game(screen)
@@ -401,7 +156,7 @@ def set_ships(screen):
             screen.blit(validate_text, (600, 668))
         # if its player 2's turn and not against a computer
         elif not COMPUTER and not WHO:
-            # blits ships for player 1
+            # blits ships for player 2
             for i in range(5):
                 screen.blit(ships_p2[0][i], ships_p2[1][i])
 
@@ -578,6 +333,8 @@ def play_game(screen):
 
                     # to store if mouse on a grid
                     on_grid = False
+                    # to store if computer should play or not
+                    computer_plays = False
 
                     if WHO and grid_p1.collidepoint(pos) and not GAMEOVER:
                         grid = grid_p1
@@ -592,20 +349,16 @@ def play_game(screen):
                         grid = grid_p2
                         mat = P1
                         on_grid = True
-                    # if against computer and computer's turn
-                    elif not WHO and COMPUTER and not GAMEOVER:
-                        mat = P1
-                        on_grid = True  # so that computer can guess, calls bot.guess() funciton in next if
 
                     if on_grid:
-                        if not COMPUTER:
-                            # converts mouse position as coordinates of a matrice
-                            coord = mouse_to_coord(pos, grid)
-                        else:
-                            coord = bot.guess(mat)
-                            pass
+                        # converts mouse position as coordinates of a matrice
+                        coord = mouse_to_coord(pos, grid)
                         updated = update_matrice(coord, mat)
                         if updated:
+                            # checks if against computer and tells it to play
+                            if WHO and COMPUTER:
+                                computer_plays = True
+
                             if if_won():
                                 GAMEOVER = True
                             else:
@@ -613,6 +366,16 @@ def play_game(screen):
                                 WHO = not WHO
                         else:
                             show_error(screen)
+
+                        # checks if computer should play
+                        # need to rewrite code as this part is only triggered if mouse button is pressed and we want the computer to play directly after player 1
+                        if computer_plays:
+                            coord = bot.guess(P1)
+                            update_matrice(coord, P1)
+                            if if_won():
+                                GAMEOVER = True
+                            else:
+                                WHO = not WHO
 
         pygame.display.update()
 
