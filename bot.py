@@ -10,11 +10,12 @@ def rand_coord():
 
 
 def guess(mat):
-    x, y = rand_coord()
-    value = mat[x][y]
+    value = "hit-"
+    while value == "hit-" or value == "miss":
+        x, y = rand_coord()
+        value = mat[x][y]
 
-    if value != "hit-" or value != "miss":
-        return (x, y)
+    return (x, y)
 
 
 def set_ships():
