@@ -11,6 +11,7 @@ Battleship game with GUI using pygame
 ## Requirements
 
 - Pygame
+- libmpg123-0.dll
 
 <br>
 <br>
