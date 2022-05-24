@@ -303,6 +303,9 @@ def play_game(screen):
     # click to continue text
     click_to = font_h1.render("Click to return to main menu.", True, "#FFFFFF")
 
+    # explosion sound
+    explosion = pygame.mixer.Sound("./audio/explosion.mp3")
+
     # game loop
     run = True
     while run:
@@ -427,12 +430,6 @@ def snap(grid, ships, id):
 def validate(ships, grid):
     global P1, P2, WHO
     valid = True
-
-    """DO I NEED 2 CHECKS OR JUST ONE"""
-    # checks if center of ships are on grid
-    for i in range(5):
-        if not grid.collidepoint(ships[1][i].center):
-            valid = False
 
     # if still valid checks if whole ship on grid
     if valid:
@@ -701,6 +698,7 @@ def update_matrice(coord, mat):
     value = mat[coord_x][coord_y]
     if value == "ship":
         mat[coord_x][coord_y] = "hit-"
+        # play sound
     elif value == "----":
         mat[coord_x][coord_y] = "miss"
     else:
@@ -766,21 +764,20 @@ def show_winner(screen, grid_p1, grid_p2):
 
 # sets up the display for solo testing
 # main menu is supposed to call the init() function when the "Play Against a Friend" button is pressed
-# def main():
-#     global SIZE
-#     pygame.init()
+def main():
+    pygame.init()
 
-#     # screen
-#     SIZE = 1500, 700
-#     screen = pygame.display.set_mode(SIZE)
+    # screen
+    size = 1500, 700
+    screen = pygame.display.set_mode(SIZE)
 
-#     # title and caption
-#     pygame.display.set_caption("Battleship")
-#     icon = pygame.image.load("./img/icon.png")
-#     pygame.display.set_icon(icon)
+    # title and caption
+    pygame.display.set_caption("Battleship")
+    icon = pygame.image.load("./img/icon.png")
+    pygame.display.set_icon(icon)
 
-#     init(screen, True)
+    init(screen, True, size)
 
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()

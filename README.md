@@ -17,5 +17,5 @@ Battleship game with GUI using pygame
 
 - If ship sunk
 - It hit -> noise
-- Exit condition
 - Music in game loop
+- Change cursor
