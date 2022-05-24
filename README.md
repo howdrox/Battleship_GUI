@@ -18,3 +18,9 @@ Battleship game with GUI using pygame
 <br>
 
 ---
+## Todo
+
+- If ship sunk
+- It hit -> noise
+- Exit condition
+- Music in game loop
