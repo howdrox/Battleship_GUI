@@ -147,11 +147,11 @@ def main():
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     if versus_rect.collidepoint(mouse_positions):  # échappatoire
                         print("versus battle")
-                        # play.init(screen, False)
+                        play.init(screen, False, SIZE)
 
                     if computer_rect.collidepoint(mouse_positions):  # échappatoire
                         print("computer battle")
-                        # play.init(screen, True)
+                        play.init(screen, True, SIZE)
 
             # ---------------OPTION BUTTON----------------------------------------------------------------------------------------------------------
             if (

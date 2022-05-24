@@ -6,10 +6,10 @@ import bot
 
 # loads all the necessary things then calls set_ships() to allow the users to position their ships
 # note: loads only things that are needed for all funcitons and stages of the game
-def init(screen, computer):
+def init(screen, computer, size):
     global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text, error_img, error_img_2, error_img_3
     global ships_p1, ships_p2
-    global P1, P2, WHO, not_closed, GAMEOVER, COMPUTER, clock
+    global P1, P2, WHO, not_closed, GAMEOVER, COMPUTER, clock, SIZE
 
     P1 = [["----" for x in range(10)] for x in range(10)]
     P2 = [["----" for x in range(10)] for x in range(10)]
@@ -23,6 +23,10 @@ def init(screen, computer):
     COMPUTER = computer
     # clock to set FPS
     clock = pygame.time.Clock()
+    # screen size
+    SIZE = size
+
+    pygame.mouse.set_visible(True)
 
     # background image
     background = pygame.image.load("./img/background3.jpg")
@@ -753,21 +757,21 @@ def show_winner(screen, grid_p1, grid_p2):
 
 # sets up the display for solo testing
 # main menu is supposed to call the init() function when the "Play Against a Friend" button is pressed
-def main():
-    global SIZE
-    pygame.init()
+# def main():
+#     global SIZE
+#     pygame.init()
 
-    # screen
-    SIZE = 1500, 700
-    screen = pygame.display.set_mode(SIZE)
+#     # screen
+#     SIZE = 1500, 700
+#     screen = pygame.display.set_mode(SIZE)
 
-    # title and caption
-    pygame.display.set_caption("Battleship")
-    icon = pygame.image.load("./img/icon.png")
-    pygame.display.set_icon(icon)
+#     # title and caption
+#     pygame.display.set_caption("Battleship")
+#     icon = pygame.image.load("./img/icon.png")
+#     pygame.display.set_icon(icon)
 
-    init(screen, True)
+#     init(screen, True)
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
