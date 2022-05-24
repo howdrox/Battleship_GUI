@@ -5,6 +5,8 @@ import play
 
 
 def main():
+    global SIZE
+
     # Initialisation
     pygame.init()
 
@@ -29,6 +31,7 @@ def main():
     # Images
     background = pygame.image.load("img//background.jpg")
     background = pygame.transform.scale(background, SIZE)
+    background_rect = background.get_rect()
 
     # Boutons & curseur
     cursor = pygame.image.load("img//cursor2.png")
@@ -84,6 +87,7 @@ def main():
         "audio//3.mp3",
         "audio//4.mp3",
         "audio//5.mp3",
+        "audio//6.mp3"
     ]
 
     # useful variables
@@ -112,11 +116,12 @@ def main():
             if event.type == pygame.QUIT:
                 # change the value to False, to exit the main loop
                 running = False
-
+                """
             if event.type == pygame.KEYDOWN:
                 print("lo")
                 effect = pygame.mixer.Sound("audio//oo.mp3")
                 effect.play()
+                """
             
 #---------------------------------------------------------------------------- BUTTONS ----------------------------------------------------------------------------------------------------------
             # ---------------PLAY BUTTON----------------------------------------------------------------------------------------------------------
