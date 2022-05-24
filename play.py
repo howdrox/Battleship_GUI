@@ -9,7 +9,7 @@ import bot
 def init(screen, computer):
     global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text, error_img, error_img_2, error_img_3
     global ships_p1, ships_p2
-    global P1, P2, WHO, not_closed, GAMEOVER, COMPUTER
+    global P1, P2, WHO, not_closed, GAMEOVER, COMPUTER, clock
 
     P1 = [["----" for x in range(10)] for x in range(10)]
     P2 = [["----" for x in range(10)] for x in range(10)]
@@ -21,6 +21,8 @@ def init(screen, computer):
     GAMEOVER = False
     # if against computer
     COMPUTER = computer
+    # clock to set FPS
+    clock = pygame.time.Clock()
 
     # background image
     background = pygame.image.load("./img/background3.jpg")
@@ -104,7 +106,7 @@ def init(screen, computer):
 def set_ships(screen):
     global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text
     global ships_p1, ships_p2
-    global P1, P2, WHO, not_closed, COMPUTER
+    global P1, P2, WHO, not_closed, COMPUTER, clock
     global SIZE
 
     # variable for drag and drop
@@ -267,6 +269,7 @@ def set_ships(screen):
                     rotate_ship(ships_p1, ships_p2)
 
         pygame.display.update()
+        clock.tick(80)
 
     if not not_closed:
         pygame.quit()
@@ -275,7 +278,7 @@ def set_ships(screen):
 def play_game(screen):
     global background, grid_img, font_h1, font_h2, player1_text, player2_text, circle_img, cross_img, torpedo_img, torpedo, click_to
     global ships_p1, ships_p2
-    global P1, P2, WHO, not_closed, GAMEOVER
+    global P1, P2, WHO, not_closed, GAMEOVER, clock
     # global SIZE
 
     # grid (599 x 599)
@@ -378,6 +381,7 @@ def play_game(screen):
                                 WHO = not WHO
 
         pygame.display.update()
+        clock.tick(80)
 
 
 # snaps the ships position to the nearest square
