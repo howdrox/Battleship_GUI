@@ -1,13 +1,11 @@
 import pygame
-import time
 from pygame import mixer
 import play
 
 
 def main():
-    global SIZE
 
-    # Initialisation
+    # -------------------------------------Initialisation -----------------------------------------------------------------------------
     pygame.init()
 
     volume = 0.01
@@ -28,10 +26,12 @@ def main():
     SIZE = (1500, 700)
     screen = pygame.display.set_mode(SIZE)
 
+    # sets a clock
+    clock = pygame.time.Clock()
+
     # Images
     background = pygame.image.load("img//background.jpg")
     background = pygame.transform.scale(background, SIZE)
-    background_rect = background.get_rect()
 
     # Boutons & curseur
     cursor = pygame.image.load("img//cursor2.png")
@@ -87,7 +87,7 @@ def main():
         "audio//3.mp3",
         "audio//4.mp3",
         "audio//5.mp3",
-        "audio//6.mp3"
+        "audio//6.mp3",
     ]
 
     # useful variables
@@ -99,7 +99,7 @@ def main():
     # Ne pas afficher le curseur
     pygame.mouse.set_visible(False)
 
-    # Boucle principale
+    # ----------------------------------------------------Boucle principale----------------------------------------------------------------------------------------
     while running:
         screen.blit(background, (0, 0))
 
@@ -109,7 +109,6 @@ def main():
 
         mixer.music.set_volume(volume)
         mouse_positions = pygame.mouse.get_pos()
-        time.sleep(1 / 120)
 
         # Events & actions
         for event in pygame.event.get():
@@ -122,8 +121,8 @@ def main():
                 effect = pygame.mixer.Sound("audio//oo.mp3")
                 effect.play()
                 """
-            
-#---------------------------------------------------------------------------- BUTTONS ----------------------------------------------------------------------------------------------------------
+
+            # ---------------------------------------------------------------------------- BUTTONS ----------------------------------------------------------------------------------------------------------
             # ---------------PLAY BUTTON----------------------------------------------------------------------------------------------------------
             if (
                 play_rect.collidepoint(mouse_positions)
@@ -147,11 +146,11 @@ def main():
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     if versus_rect.collidepoint(mouse_positions):  # échappatoire
                         print("versus battle")
-                        play.init(screen, False, SIZE)
+                        running = play.init(screen, False, SIZE)
 
                     if computer_rect.collidepoint(mouse_positions):  # échappatoire
                         print("computer battle")
-                        play.init(screen, True, SIZE)
+                        running = play.init(screen, True, SIZE)
 
             # ---------------OPTION BUTTON----------------------------------------------------------------------------------------------------------
             if (
@@ -231,7 +230,6 @@ def main():
                 play_button_pressed = False
                 option_button_pressed = False
 
-
             # ---------------QUIT BUTTON----------------------------------------------------------------------------------------------------------
 
             if (
@@ -244,30 +242,36 @@ def main():
 
         # Blits -----------------------------------------------------------------------------
         exit_rect.topleft = ((SIZE[0] // 2) - 70, (SIZE[1] // 2) + 100)
-        screen.blit(exit_button, ((SIZE[0] // 2) - 70, (SIZE[1] // 2) + 100))
 
-        if not (play_button_pressed):
-            screen.blit(play_button, ((SIZE[0] // 2) - 70, (SIZE[1] // 2) - 150))
-        else:
-            screen.blit(return_button, ((0, (SIZE[1]) - 100)))
-            screen.blit(versus_button, ((SIZE[0] // 2) + 130, (SIZE[1] // 2) - 70))
-            screen.blit(computer_button, ((SIZE[0] // 2) - 220, (SIZE[1] // 2) - 50))
+        # checks if window was closed in "play game" phase and prevents screen.blit() to cause an error
+        if running:
+            screen.blit(exit_button, ((SIZE[0] // 2) - 70, (SIZE[1] // 2) + 100))
 
-        if not (option_button_pressed):
-            screen.blit(option_button, ((SIZE[0] // 2) - 70, (SIZE[1] // 2) - 50))
-        else:
-            screen.blit(return_button, ((0, (SIZE[1]) - 100)))
-            screen.blit(plus_button, ((SIZE[0] // 2) + 130, (SIZE[1] // 2) - 10))
-            screen.blit(minus_button, ((SIZE[0] // 2) - 150, (SIZE[1] // 2) + 10))
-            screen.blit(switch, ((SIZE[0] // 2), (SIZE[1] // 2)))
-            if mute_action:
-                screen.blit(mute, (SIZE[0] - 100, 0))
+            if not (play_button_pressed):
+                screen.blit(play_button, ((SIZE[0] // 2) - 70, (SIZE[1] // 2) - 150))
             else:
-                screen.blit(unmute, (SIZE[0] - 100, 0))
+                screen.blit(return_button, ((0, (SIZE[1]) - 100)))
+                screen.blit(versus_button, ((SIZE[0] // 2) + 130, (SIZE[1] // 2) - 70))
+                screen.blit(
+                    computer_button, ((SIZE[0] // 2) - 220, (SIZE[1] // 2) - 50)
+                )
 
-        screen.blit(cursor, pygame.mouse.get_pos())
-        # Actualisation les changements à l'écran:
-        pygame.display.update()
+            if not (option_button_pressed):
+                screen.blit(option_button, ((SIZE[0] // 2) - 70, (SIZE[1] // 2) - 50))
+            else:
+                screen.blit(return_button, ((0, (SIZE[1]) - 100)))
+                screen.blit(plus_button, ((SIZE[0] // 2) + 130, (SIZE[1] // 2) - 10))
+                screen.blit(minus_button, ((SIZE[0] // 2) - 150, (SIZE[1] // 2) + 10))
+                screen.blit(switch, ((SIZE[0] // 2), (SIZE[1] // 2)))
+                if mute_action:
+                    screen.blit(mute, (SIZE[0] - 100, 0))
+                else:
+                    screen.blit(unmute, (SIZE[0] - 100, 0))
+
+            screen.blit(cursor, pygame.mouse.get_pos())
+            # Actualisation les changements à l'écran:
+            pygame.display.update()
+            clock.tick(80)
 
 
 # run the main function only if this module is executed as the main script

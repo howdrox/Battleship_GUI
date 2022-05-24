@@ -9,19 +9,19 @@ import bot
 def init(screen, computer, size):
     global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text, error_img, error_img_2, error_img_3
     global ships_p1, ships_p2
-    global P1, P2, WHO, not_closed, GAMEOVER, COMPUTER, clock, SIZE
+    global P1, P2, WHO, still_running, GAMEOVER, COMPUTER, clock, SIZE
 
     P1 = [["----" for x in range(10)] for x in range(10)]
     P2 = [["----" for x in range(10)] for x in range(10)]
     # who's turn it is with True being player 1
     WHO = True
     # global variable if pygame should be running
-    not_closed = True
+    still_running = True
     # if someone won
     GAMEOVER = False
     # if against computer
     COMPUTER = computer
-    # clock to set FPS
+    # sets a clock
     clock = pygame.time.Clock()
     # screen size
     SIZE = size
@@ -103,14 +103,16 @@ def init(screen, computer, size):
 
     set_ships(screen)
     # checks if the window was closed, if not then continue
-    if not_closed:
+    if still_running:
         play_game(screen)
+
+    return still_running
 
 
 def set_ships(screen):
     global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text
     global ships_p1, ships_p2
-    global P1, P2, WHO, not_closed, COMPUTER, clock
+    global P1, P2, WHO, still_running, COMPUTER, clock
     global SIZE
 
     # variable for drag and drop
@@ -179,7 +181,7 @@ def set_ships(screen):
                 # stop this while loop
                 run = False
                 # prevents other loop to start as pygame.quit() is called just after this while loop
-                not_closed = False
+                still_running = False
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
 
@@ -275,14 +277,15 @@ def set_ships(screen):
         pygame.display.update()
         clock.tick(80)
 
-    if not not_closed:
+    # if window was closed
+    if not still_running:
         pygame.quit()
 
 
 def play_game(screen):
     global background, grid_img, font_h1, font_h2, player1_text, player2_text, circle_img, cross_img, torpedo_img, torpedo, click_to
     global ships_p1, ships_p2
-    global P1, P2, WHO, not_closed, GAMEOVER, clock
+    global P1, P2, WHO, still_running, GAMEOVER, clock
     # global SIZE
 
     # grid (599 x 599)
@@ -332,6 +335,8 @@ def play_game(screen):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+                # prevents other pygame functions to be called as pygame.quit() is called just after this while loop
+                still_running = False
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -386,6 +391,10 @@ def play_game(screen):
 
         pygame.display.update()
         clock.tick(80)
+
+    # if window was closed
+    if not still_running:
+        pygame.quit()
 
 
 # snaps the ships position to the nearest square
