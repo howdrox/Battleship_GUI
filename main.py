@@ -73,7 +73,6 @@ def main():
 
     unmute = pygame.image.load("img//unmute.png")
     unmute = pygame.transform.scale(unmute, (50, 50))
-    unmute_rect = unmute.get_rect()
 
     switch = pygame.image.load("img//switch.png")
     switch = pygame.transform.scale(switch, (70, 70))
@@ -145,11 +144,21 @@ def main():
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     if versus_rect.collidepoint(mouse_positions):  # échappatoire
                         print("versus battle")
-                        running = play.init(screen, False, SIZE)
+                        running = play.init(
+                            screen,
+                            False,
+                            SIZE,
+                            (mix[indice_music], volume, pygame.mixer.music.get_pos()),
+                        )
 
                     if computer_rect.collidepoint(mouse_positions):  # échappatoire
                         print("computer battle")
-                        running = play.init(screen, True, SIZE)
+                        running = play.init(
+                            screen,
+                            True,
+                            SIZE,
+                            (mix[indice_music], volume, pygame.mixer.music.get_pos()),
+                        )
 
             # ---------------OPTION BUTTON----------------------------------------------------------------------------------------------------------
             if (
@@ -267,7 +276,7 @@ def main():
                 else:
                     screen.blit(unmute, (SIZE[0] - 100, 0))
 
-            screen.blit(cursor, pygame.mouse.get_pos())
+            screen.blit(cursor, mouse_positions)
             # Actualisation les changements à l'écran:
             pygame.display.update()
             clock.tick(80)

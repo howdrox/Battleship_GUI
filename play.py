@@ -2,14 +2,16 @@
 
 
 import pygame
+
+# import bot.py file
 import bot
 
 # loads all the necessary things then calls set_ships() to allow the users to position their ships
 # note: loads only things that are needed for all funcitons and stages of the game
-def init(screen, computer, size):
-    global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text, error_img, error_img_2, error_img_3
+def init(screen, computer, size, audio):
+    global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text, error_img, error_img_2, error_img_3, cursor
     global ships_p1, ships_p2
-    global P1, P2, WHO, still_running, GAMEOVER, COMPUTER, clock, SIZE
+    global P1, P2, WHO, still_running, GAMEOVER, COMPUTER, clock, SIZE, AUDIO
 
     P1 = [["----" for x in range(10)] for x in range(10)]
     P2 = [["----" for x in range(10)] for x in range(10)]
@@ -25,8 +27,8 @@ def init(screen, computer, size):
     clock = pygame.time.Clock()
     # screen size
     SIZE = size
-
-    pygame.mouse.set_visible(True)
+    # audio settings from main menu
+    AUDIO = audio
 
     # background image
     background = pygame.image.load("./img/background3.jpg")
@@ -56,6 +58,17 @@ def init(screen, computer, size):
     # Player 1 and 2 text
     player1_text = font_h1.render("Player 1's board", True, "#FFFFFF")
     player2_text = font_h1.render("Player 2's board", True, "#FFFFFF")
+
+    # cursor
+    cursor = pygame.image.load("img//cursor2.png")
+
+    # continues to play same music at same position and volume
+    pygame.mixer.music.load(AUDIO[0])
+    pygame.mixer.music.set_volume(AUDIO[1])
+    # sets music to play indefinitely
+    pygame.mixer.music.play(-1)
+    # sets position of song to where it was before play.init() funciton was called
+    pygame.mixer.music.set_pos(AUDIO[2] / 1000)
 
     # ship data for palyer 1
     # list of [[ships_img], [ships_rect], [if_picked], [number_of_rotations]]
@@ -110,7 +123,7 @@ def init(screen, computer, size):
 
 
 def set_ships(screen):
-    global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text
+    global background, grid_img, parchment_img, font_h1, font_h2, player1_text, player2_text, cursor
     global ships_p1, ships_p2
     global P1, P2, WHO, still_running, COMPUTER, clock
     global SIZE
@@ -140,6 +153,9 @@ def set_ships(screen):
     # game loop
     run = True
     while run:
+        # gets mouse position
+        pos = pygame.mouse.get_pos()
+
         # blits background
         screen.blit(background, (0, 0))
 
@@ -172,8 +188,8 @@ def set_ships(screen):
             pygame.draw.rect(screen, "#D74B4B", validate_p2, border_radius=12)
             screen.blit(validate_text, (1190, 668))
 
-        # gets mouse position
-        pos = pygame.mouse.get_pos()
+        # blit cursor last as it should be on top of everything
+        screen.blit(cursor, pos)
 
         # event handler
         for event in pygame.event.get():
@@ -283,7 +299,7 @@ def set_ships(screen):
 
 
 def play_game(screen):
-    global background, grid_img, font_h1, font_h2, player1_text, player2_text, circle_img, cross_img, torpedo_img, torpedo, click_to
+    global background, grid_img, font_h1, font_h2, player1_text, player2_text, circle_img, cross_img, torpedo_img, torpedo, click_to, cursor
     global ships_p1, ships_p2
     global P1, P2, WHO, still_running, GAMEOVER, clock
     global explosion_audio
@@ -310,6 +326,8 @@ def play_game(screen):
     # game loop
     run = True
     while run:
+        pos = pygame.mouse.get_pos()
+
         # blits background
         screen.blit(background, (0, 0))
 
@@ -329,11 +347,12 @@ def play_game(screen):
         # blits all the circles and crosses on hits or misses for both players
         show_if_hit(screen, grid_p1, grid_p2)
 
-        pos = pygame.mouse.get_pos()
-
         # shows who won
         if GAMEOVER:
             show_winner(screen, grid_p1, grid_p2)
+
+        # blit cursor last as it should be on top of everything
+        screen.blit(cursor, pos)
 
         # event handler
         for event in pygame.event.get():
