@@ -11,7 +11,7 @@ Battleship game with GUI using pygame
 ## Requirements
 
 - Pygame
-- libmpg123-0.dll
+- libmpg123-0.dll (in `C:\Windows\System32` and `C:\Windows\SysWOW64` to allow pygame to play mp3 files)
 
 ## Todo
 
