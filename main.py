@@ -5,8 +5,6 @@ import play
 
 
 def main():
-    global SIZE
-
     # Initialisation
     pygame.init()
 
@@ -31,7 +29,6 @@ def main():
     # Images
     background = pygame.image.load("img//background.jpg")
     background = pygame.transform.scale(background, SIZE)
-    background_rect = background.get_rect()
 
     # Boutons & curseur
     cursor = pygame.image.load("img//cursor2.png")
@@ -94,8 +91,6 @@ def main():
     option_button_pressed = False
     mute_action = False
     running = True
-    clicked = False
-    option_fait = False
 
     # Ne pas afficher le curseur
     pygame.mouse.set_visible(False)
@@ -168,7 +163,7 @@ def main():
             else:
                 # rect
                 plus_rect.topleft = ((SIZE[0] // 2) + 130, (SIZE[1] // 2) - 10)
-                minus_rect.topleft = ((SIZE[0] // 2) - 150, (SIZE[1] // 2) - 10)
+                minus_rect.topleft = ((SIZE[0] // 2) - 150, (SIZE[1] // 2) + 10)
                 switch_rect.topleft = ((SIZE[0] // 2), (SIZE[1] // 2))
                 return_rect.topleft = (0, (SIZE[1]) - 100)
                 mute_rect.topleft = (SIZE[0] - 100, 0)
