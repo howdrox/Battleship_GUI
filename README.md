@@ -16,4 +16,3 @@ Battleship game with GUI using pygame
 ## Todo
 
 - If ship sunk
-- Change cursor
