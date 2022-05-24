@@ -1,9 +1,12 @@
 import pygame
 import time
 from pygame import mixer
+import play
 
 
 def main():
+    global SIZE
+
     # Initialisation
     pygame.init()
 
@@ -15,24 +18,23 @@ def main():
     mixer.music.play()
 
     # Afficher le logo
-    logo = pygame.image.load(".//img//icon.png")
+    logo = pygame.image.load("img//icon.png")
     pygame.display.set_icon(logo)
 
     # Titre de la fenêtre
     pygame.display.set_caption("Battleship")
 
     # Création de l'écran
-    size = (1500, 800)
-    screen = pygame.display.set_mode(size)
+    SIZE = (1500, 700)
+    screen = pygame.display.set_mode(SIZE)
 
     # Images
     background = pygame.image.load("img//background.jpg")
-    background = pygame.transform.scale(background, size)
+    background = pygame.transform.scale(background, SIZE)
     background_rect = background.get_rect()
 
     # Boutons & curseur
-    cursor = pygame.image.load("img//cursor.png")
-    cursor = pygame.transform.scale(cursor, (30, 30))
+    cursor = pygame.image.load("img//cursor2.png")
 
     play_button = pygame.image.load("img//start.png")
     play_button = pygame.transform.scale(play_button, (200, 100))
@@ -87,16 +89,12 @@ def main():
         "audio//5.mp3",
     ]
 
-    empty = pygame.image.load("img//empty_.png")
-    empty = pygame.transform.scale(empty, size)
-    empty_rect = empty.get_rect()
-
     # useful variables
     play_button_pressed = False
     option_button_pressed = False
     mute_action = False
-    clicked = False
     running = True
+    clicked = False
     option_fait = False
 
     # Ne pas afficher le curseur
@@ -105,9 +103,8 @@ def main():
     # Boucle principale
     while running:
         screen.blit(background, (0, 0))
-        empty_rect.topleft = (0, 0)
 
-        if not (pygame.mixer.music.get_busy()) and not (mute_action):
+        if not (mixer.music.get_busy()) and not (mute_action):
             mixer.music.load(mix[indice_music])
             mixer.music.play()
 
@@ -139,20 +136,22 @@ def main():
 
             if not play_button_pressed:
                 # rect
-                play_rect.topleft = ((size[0] // 2) - 70, (size[1] // 2) - 150)
+                play_rect.topleft = ((SIZE[0] // 2) - 70, (SIZE[1] // 2) - 150)
             else:
                 # rect
                 play_rect.topleft = (2000, 2000)
-                versus_rect.topleft = ((size[0] // 2) + 130, (size[1] // 2) - 70)
-                computer_rect.topleft = ((size[0] // 2) - 220, (size[1] // 2) - 50)
-                return_rect.topleft = (0, (size[1]) - 100)
+                versus_rect.topleft = ((SIZE[0] // 2) + 130, (SIZE[1] // 2) - 70)
+                computer_rect.topleft = ((SIZE[0] // 2) - 220, (SIZE[1] // 2) - 50)
+                return_rect.topleft = (0, (SIZE[1]) - 100)
 
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     if versus_rect.collidepoint(mouse_positions):  # échappatoire
                         print("versus battle")
+                        # play.init(screen, False)
 
                     if computer_rect.collidepoint(mouse_positions):  # échappatoire
                         print("computer battle")
+                        # play.init(screen, True)
 
             # ---------------OPTION BUTTON----------------------------------------------------------------------------------------------------------
             if (
@@ -165,14 +164,14 @@ def main():
                 play_button_pressed = False
             if not option_button_pressed:
                 # rect
-                option_rect.topleft = ((size[0] // 2) - 70, (size[1] // 2) - 50)
+                option_rect.topleft = ((SIZE[0] // 2) - 70, (SIZE[1] // 2) - 50)
             else:
                 # rect
-                plus_rect.topleft = ((size[0] // 2) + 130, (size[1] // 2) - 10)
-                minus_rect.topleft = ((size[0] // 2) - 150, (size[1] // 2) - 10)
-                switch_rect.topleft = ((size[0] // 2), (size[1] // 2))
-                return_rect.topleft = (0, (size[1]) - 100)
-                mute_rect.topleft = (size[0] - 100, 0)
+                plus_rect.topleft = ((SIZE[0] // 2) + 130, (SIZE[1] // 2) - 10)
+                minus_rect.topleft = ((SIZE[0] // 2) - 150, (SIZE[1] // 2) - 10)
+                switch_rect.topleft = ((SIZE[0] // 2), (SIZE[1] // 2))
+                return_rect.topleft = (0, (SIZE[1]) - 100)
+                mute_rect.topleft = (SIZE[0] - 100, 0)
                 # Adaptation du volume
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     if plus_rect.collidepoint(mouse_positions):
@@ -239,27 +238,27 @@ def main():
                 running = False
 
         # Blits -----------------------------------------------------------------------------
-        exit_rect.topleft = ((size[0] // 2) - 70, (size[1] // 2) + 100)
-        screen.blit(exit_button, ((size[0] // 2) - 70, (size[1] // 2) + 100))
+        exit_rect.topleft = ((SIZE[0] // 2) - 70, (SIZE[1] // 2) + 100)
+        screen.blit(exit_button, ((SIZE[0] // 2) - 70, (SIZE[1] // 2) + 100))
 
         if not (play_button_pressed):
-            screen.blit(play_button, ((size[0] // 2) - 70, (size[1] // 2) - 150))
+            screen.blit(play_button, ((SIZE[0] // 2) - 70, (SIZE[1] // 2) - 150))
         else:
-            screen.blit(return_button, ((0, (size[1]) - 100)))
-            screen.blit(versus_button, ((size[0] // 2) + 130, (size[1] // 2) - 70))
-            screen.blit(computer_button, ((size[0] // 2) - 220, (size[1] // 2) - 50))
+            screen.blit(return_button, ((0, (SIZE[1]) - 100)))
+            screen.blit(versus_button, ((SIZE[0] // 2) + 130, (SIZE[1] // 2) - 70))
+            screen.blit(computer_button, ((SIZE[0] // 2) - 220, (SIZE[1] // 2) - 50))
 
         if not (option_button_pressed):
-            screen.blit(option_button, ((size[0] // 2) - 70, (size[1] // 2) - 50))
+            screen.blit(option_button, ((SIZE[0] // 2) - 70, (SIZE[1] // 2) - 50))
         else:
-            screen.blit(return_button, ((0, (size[1]) - 100)))
-            screen.blit(plus_button, ((size[0] // 2) + 130, (size[1] // 2) - 10))
-            screen.blit(minus_button, ((size[0] // 2) - 150, (size[1] // 2) + 10))
-            screen.blit(switch, ((size[0] // 2), (size[1] // 2)))
+            screen.blit(return_button, ((0, (SIZE[1]) - 100)))
+            screen.blit(plus_button, ((SIZE[0] // 2) + 130, (SIZE[1] // 2) - 10))
+            screen.blit(minus_button, ((SIZE[0] // 2) - 150, (SIZE[1] // 2) + 10))
+            screen.blit(switch, ((SIZE[0] // 2), (SIZE[1] // 2)))
             if mute_action:
-                screen.blit(mute, (size[0] - 100, 0))
+                screen.blit(mute, (SIZE[0] - 100, 0))
             else:
-                screen.blit(unmute, (size[0] - 100, 0))
+                screen.blit(unmute, (SIZE[0] - 100, 0))
 
         screen.blit(cursor, pygame.mouse.get_pos())
         # Actualisation les changements à l'écran:
