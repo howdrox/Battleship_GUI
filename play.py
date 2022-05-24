@@ -286,6 +286,7 @@ def play_game(screen):
     global background, grid_img, font_h1, font_h2, player1_text, player2_text, circle_img, cross_img, torpedo_img, torpedo, click_to
     global ships_p1, ships_p2
     global P1, P2, WHO, still_running, GAMEOVER, clock
+    global explosion_audio
     # global SIZE
 
     # grid (599 x 599)
@@ -304,7 +305,7 @@ def play_game(screen):
     click_to = font_h1.render("Click to return to main menu.", True, "#FFFFFF")
 
     # explosion sound
-    explosion = pygame.mixer.Sound("./audio/explosion.mp3")
+    explosion_audio = pygame.mixer.Sound("./audio/explosion2.mp3")
 
     # game loop
     run = True
@@ -691,6 +692,7 @@ def show_torpedo(screen):
 
 # update the players matrice at the coords inputed
 def update_matrice(coord, mat):
+    global explosion_audio
     result = True
     coord_x = coord[0]
     coord_y = coord[1]
@@ -698,6 +700,7 @@ def update_matrice(coord, mat):
     value = mat[coord_x][coord_y]
     if value == "ship":
         mat[coord_x][coord_y] = "hit-"
+        explosion_audio.play()
         # play sound
     elif value == "----":
         mat[coord_x][coord_y] = "miss"
@@ -769,7 +772,7 @@ def main():
 
     # screen
     size = 1500, 700
-    screen = pygame.display.set_mode(SIZE)
+    screen = pygame.display.set_mode(size)
 
     # title and caption
     pygame.display.set_caption("Battleship")
