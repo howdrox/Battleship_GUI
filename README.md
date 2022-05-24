@@ -13,11 +13,6 @@ Battleship game with GUI using pygame
 - Pygame
 - libmpg123-0.dll
 
-<br>
-<br>
-<br>
-
----
 ## Todo
 
 - If ship sunk
