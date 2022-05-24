@@ -113,13 +113,13 @@ def main():
                 # change the value to False, to exit the main loop
                 running = False
 
-            """if event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN:
                 print("lo")
                 effect = pygame.mixer.Sound("audio//oo.mp3")
                 effect.play()
-            """
-            # BUTTONS
-            # PLAY BUTTON--------------------------------------------------------------------------------------------------
+            
+#---------------------------------------------------------------------------- BUTTONS ----------------------------------------------------------------------------------------------------------
+            # ---------------PLAY BUTTON----------------------------------------------------------------------------------------------------------
             if (
                 play_rect.collidepoint(mouse_positions)
                 and event.type == pygame.MOUSEBUTTONDOWN
@@ -171,11 +171,11 @@ def main():
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     if plus_rect.collidepoint(mouse_positions):
                         print("increase volume")
-                        volume += 0.005
+                        volume += 0.01
 
                     if minus_rect.collidepoint(mouse_positions):
                         print("decrease volume")
-                        volume -= 0.005
+                        volume -= 0.01
 
                 # Mute button
                 if mute_rect.collidepoint(mouse_positions):
@@ -215,6 +215,8 @@ def main():
                         mixer.music.load(mix[indice_music])
                         mixer.music.play()
 
+            # ---------------RETURN BUTTON----------------------------------------------------------------------------------------------------------
+
             if (
                 return_rect.collidepoint(mouse_positions)
                 and event.type == pygame.MOUSEBUTTONDOWN
@@ -224,12 +226,15 @@ def main():
                 play_button_pressed = False
                 option_button_pressed = False
 
+
+            # ---------------QUIT BUTTON----------------------------------------------------------------------------------------------------------
+
             if (
                 exit_rect.collidepoint(mouse_positions)
                 and event.type == pygame.MOUSEBUTTONDOWN
                 and event.button == 1
             ):
-                print("je baise la daronne a paul")
+                print("Paul a quitté le jeu")
                 running = False
 
         # Blits -----------------------------------------------------------------------------
