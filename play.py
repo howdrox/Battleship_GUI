@@ -51,20 +51,20 @@ def init(screen, against_computer, size, audio):
     FPS = 80
 
     # background image
-    background = pygame.image.load("./img/background3.jpg")
+    background = pygame.image.load("./img/background2.jpg")
 
     # grid image (599 x 599)
     grid_img = pygame.image.load("./img/grid_white.png")
 
     # parchment image (122 x 563)
-    parchment_img = pygame.image.load("./img/parchment2.png")
+    parchment_img = pygame.image.load("./img/parchment.png")
 
     # ships images
-    destroyer_img = pygame.image.load("./img/destroyer2.png")
-    cruiser_img = pygame.image.load("./img/cruiser2.png")
-    submarine_img = pygame.image.load("./img/submarine2.png")
-    battleship_img = pygame.image.load("./img/battleship2.png")
-    carrier_img = pygame.image.load("./img/carrier2.png")
+    destroyer_img = pygame.image.load("./img/destroyer.png")
+    cruiser_img = pygame.image.load("./img/cruiser.png")
+    submarine_img = pygame.image.load("./img/submarine.png")
+    battleship_img = pygame.image.load("./img/battleship.png")
+    carrier_img = pygame.image.load("./img/carrier.png")
 
     # error images (1000 x 600)
     error_img = pygame.image.load("./img/blue_screen.png")
@@ -80,7 +80,7 @@ def init(screen, against_computer, size, audio):
     player2_text = font_h1.render("Player 2's board", True, "#FFFFFF")
 
     # cursor
-    cursor = pygame.image.load("img//cursor2.png")
+    cursor = pygame.image.load("img//cursor.png")
 
     # continues to play same music at same position and volume
     pygame.mixer.music.load(AUDIO[0])
@@ -355,13 +355,13 @@ def play_game(screen):
 
     # cirlce and cross img (50 x 50)
     circle_img = pygame.image.load("./img/circle.png")
-    cross_img = pygame.image.load("./img/cross2.png")
+    cross_img = pygame.image.load("./img/cross.png")
 
     # click to continue text
     click_to = font_h1.render("Click to return to main menu.", True, "#FFFFFF")
 
     # explosion sound
-    explosion_audio = pygame.mixer.Sound("./audio/explosion2.mp3")
+    explosion_audio = pygame.mixer.Sound("./audio/explosion.mp3")
 
     # game loop
     run = True
@@ -922,10 +922,10 @@ def show_winner(screen, grid_p1, grid_p2):
     banner.fill("#000000")
 
     # won image (180 x 180)
-    win = pygame.image.load("./img/win3.png")
+    win = pygame.image.load("./img/win.png")
 
     # KO image (398 x 180)
-    ko = pygame.image.load("./img/KO2.png")
+    ko = pygame.image.load("./img/KO.png")
 
     if who:
         grid_winner = grid_p1
