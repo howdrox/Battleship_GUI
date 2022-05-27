@@ -345,6 +345,9 @@ def play_game(screen):
     # audio
     global explosion_audio
 
+    counter_p1 = 0
+    counter_p2 = 0
+
     # grid (599 x 599)
     grid_p1 = grid_img.get_rect(center=(309, 359))
     grid_p2 = grid_img.get_rect(center=(1189, 359))
@@ -380,6 +383,14 @@ def play_game(screen):
         # add player 1 and player 2 text
         screen.blit(player1_text, (183, 20))
         screen.blit(player2_text, (1073, 20))
+
+        # renders the number of moves text
+        moves_p1 = font_h1.render(f"Number of moves: {counter_p1}", True, "#FFFFFF")
+        moves_p2 = font_h1.render(f"Number of moves: {counter_p2}", True, "#FFFFFF")
+
+        # blits the number of moves for both players
+        screen.blit(moves_p1, (40, 664))
+        screen.blit(moves_p2, (1500 - (moves_p2.get_width() + 40), 664))
 
         # adds torpedo
         show_torpedo(screen)
@@ -430,12 +441,18 @@ def play_game(screen):
                         coord = mouse_to_coord(pos, grid)
                         updated = update_matrix(coord, mat)
                         if updated:
-                            # checks if against computer and tells it to play
-                            if who and computer:
-                                computer_plays = True
+                            if who:
+                                # checks if against computer and tells it to play
+                                if computer:
+                                    computer_plays = True
+                                counter_p1 += 1
+                            else:
+                                counter_p2 += 1
 
                             if if_won():
                                 gameover = True
+                                # if player 1 won against computer then computer does not need to play
+                                computer_plays = False
                             else:
                                 # changes the player's turn
                                 who = not who
@@ -451,6 +468,8 @@ def play_game(screen):
                                 gameover = True
                             else:
                                 who = not who
+                            # increments counter
+                            counter_p2 += 1
 
         pygame.display.update()
         # sets FPS
@@ -975,7 +994,7 @@ def main():
     # sets cursor to false
     pygame.mouse.set_visible(False)
 
-    init(screen, True, size, ("./audio/0.mp3", 0.05, 0))
+    init(screen, False, size, ("./audio/0.mp3", 0.05, 0))
 
 
 if __name__ == "__main__":
