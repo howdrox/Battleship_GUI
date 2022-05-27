@@ -645,21 +645,6 @@ def to_mat(ships, grid):
                 mat[coord_x][coord_y + 2] = "ship"
 
 
-def show_mat(m):
-    """
-    Prints a matrix
-
-    Parameters:
-        m (list[list[str]])
-    """
-
-    for i in range(10):
-        for j in range(10):
-            print(f"{m[j][i]}", end=" ")
-        print("\n")
-    print("\n")
-
-
 def num_of(a, mat):
     """
     Counts the number of `a` in `mat`.
@@ -952,10 +937,28 @@ def show_winner(screen, grid_p1, grid_p2):
     screen.blit(click_to, (750 - click_to.get_width() / 2, 460 - click_to.get_height()))
 
 
+def show_mat(m):
+    """
+    Prints a matrix
+
+    Debug function, not used in the code.
+
+    Parameters:
+        m (list[list[str]])
+    """
+
+    for i in range(10):
+        for j in range(10):
+            print(f"{m[j][i]}", end=" ")
+        print("\n")
+    print("\n")
+
+
 def main():
     """
     Initialises pygame for solo testing.
 
+    Debug function, not used in the code.
     Used when the main menu was not yet set up.
     """
     pygame.init()
