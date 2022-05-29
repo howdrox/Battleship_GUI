@@ -48,7 +48,7 @@ def init(screen, against_computer, size, audio):
     # audio settings from main menu
     AUDIO = audio
     # frames per second
-    FPS = 80
+    FPS = 120
 
     # background image
     background = pygame.image.load("./img/background2.jpg")
@@ -353,6 +353,7 @@ def play_game(screen):
     # audio
     global explosion_audio
 
+    # stores the number of moves by each player
     counter_p1 = 0
     counter_p2 = 0
 
@@ -374,7 +375,7 @@ def play_game(screen):
     # explosion sound
     explosion_audio = pygame.mixer.Sound("./audio/explosion.mp3")
 
-    # transposes the ships rects to the other grid
+    # transposes the ships rects to the other grid so that when they appear they are in the correct position
     for i in range(5):
         ship_pos_1 = ships_p1[1][i].center
         ships_p1[1][i].center = (ship_pos_1[0] + 750, ship_pos_1[1])
@@ -414,7 +415,7 @@ def play_game(screen):
             if ships_p2[4][i] == True:
                 screen.blit(ships_p2[0][i], ships_p2[1][i])
 
-        # adds torpedo
+        # blits torpedo to show whos turn it is
         show_torpedo(screen)
 
         # blits all the circles and crosses on hits or misses for both players
@@ -818,10 +819,9 @@ def show_error(screen):
     pygame.time.wait(150)
 
 
-# rotates the image of the ship which is being picked
 def rotate_ship(ships_p1, ships_p2):
     """
-    Rotates the image and Rect of the ship which is being picked up
+    Rotates the image and Rect of the ship which is being picked up.
 
     Parameters:
         ships_p1 (list): Player 1's ship data.
@@ -929,23 +929,27 @@ def show_if_hit(screen, grid_p1, grid_p2):
 
 
 def show_if_sunk():
+    """
+    Updates the ship's `if_sunk` variable if all of its coords are hit.
+    """
+
     global who, p1, p2, ships_p1, ships_p2, ship_coord_1, ship_coord_2
 
     for i in range(5):
-        counter_1 = 0
-        counter_2 = 0
+        count_1 = 0
+        count_2 = 0
 
         # checks if ship is sunk
         for j in range(len(ship_coord_1[i])):
             if p1[ship_coord_1[i][j][0]][ship_coord_1[i][j][1]] == "hit-":
-                counter_1 += 1
+                count_1 += 1
             if p2[ship_coord_2[i][j][0]][ship_coord_2[i][j][1]] == "hit-":
-                counter_2 += 1
+                count_2 += 1
 
         # updates the ships status
-        if counter_1 == len(ship_coord_1[i]):
+        if count_1 == len(ship_coord_1[i]):
             ships_p1[4][i] = True
-        if counter_2 == len(ship_coord_2[i]):
+        if count_2 == len(ship_coord_2[i]):
             ships_p2[4][i] = True
 
 
@@ -983,6 +987,7 @@ def update_matrix(coord, mat):
     """
 
     global explosion_audio
+
     result = True
     coord_x = coord[0]
     coord_y = coord[1]
@@ -1109,7 +1114,7 @@ def main():
     # sets cursor to false
     pygame.mouse.set_visible(False)
 
-    init(screen, True, size, ("./audio/0.mp3", 0.05, 0))
+    init(screen, True, size, ("./audio/0.mp3", 0.07, 0))
 
 
 if __name__ == "__main__":
