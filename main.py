@@ -194,7 +194,9 @@ def main():
                         mute_action = False
                         print("unmuting")
 
-                if mute_action or volume == 0:
+                if mute_action:
+                    volume = 0
+                if volume == 0:
                     mixer.music.pause()
                 else:
                     mixer.music.unpause()
