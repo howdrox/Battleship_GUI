@@ -15,5 +15,5 @@ Battleship game made completly with python using pygame
 - Main menu: `main.py`
 - Playing phase: `play.py`
 - Bot brains: `bot.py`
-    - Bot algorithm based on [this.](https://www.datagenetics.com/blog/december32011/)
+    - Bot algorithm inspired by the probability density function algorithm from [here.](https://www.datagenetics.com/blog/december32011/)
 
