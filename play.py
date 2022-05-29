@@ -28,7 +28,7 @@ def init(screen, against_computer, size, audio):
     # ships variables
     global ships_p1, ships_p2
     # game variables
-    global p1, p2, who, gameover, computer, SIZE, AUDIO, FPS, still_running, clock
+    global p1, p2, who, gameover, computer, SIZE, AUDIO, FPS, still_running, clock, ship_coord_1, ship_coord_2
 
     # empty player 1 and player 2 matrix
     p1 = [["----" for x in range(10)] for x in range(10)]
@@ -91,7 +91,7 @@ def init(screen, against_computer, size, audio):
     pygame.mixer.music.set_pos(AUDIO[2] / 1000)
 
     # ship data for palyer 1
-    # list of [[ships_img], [ships_rect], [if_picked], [number_of_rotations]]
+    # list of [[ships_img], [ships_rect], [if_picked], [number_of_rotations], [if_sunk]]
     # initial 10 px between each ship
     ships_p1 = [
         [
@@ -110,10 +110,13 @@ def init(screen, against_computer, size, audio):
         ],
         [False, False, False, False, False],
         [0, 0, 0, 0, 0],
+        [False, False, False, False, False],
     ]
+    # stores the coordinates of player 1's ships
+    ship_coord_1 = [[] for x in range(5)]
 
     # ship data for palyer 2
-    # list of [[ships_img], [ships_rect], [if_picked], [number_of_rotations]]
+    # list of [[ships_img], [ships_rect], [if_picked], [number_of_rotations], [if_sunk]]
     # initial 10 px between each ship
     ships_p2 = [
         [
@@ -132,7 +135,10 @@ def init(screen, against_computer, size, audio):
         ],
         [False, False, False, False, False],
         [0, 0, 0, 0, 0],
+        [False, False, False, False, False],
     ]
+    # stores the coordinates of player 2's ships
+    ship_coord_2 = [[] for x in range(5)]
 
     set_ships(screen)
     # checks if the window was closed, if not then continue
@@ -155,7 +161,7 @@ def set_ships(screen):
     # ship data
     global ships_p1, ships_p2
     # game data
-    global p1, p2, who, computer, SIZE, FPS, still_running, clock
+    global p1, p2, who, computer, SIZE, FPS, still_running, clock, ship_coord_2
 
     # variable for drag and drop
     PICKED = False
@@ -268,7 +274,9 @@ def set_ships(screen):
                             if not computer:
                                 who = False
                             else:
-                                p2 = bot.set_ships()
+                                p2, ship_coord_2 = bot.set_ships(
+                                    ship_coord_2, ships_p2, grid_p2
+                                )
                                 # stops the phase of setting up ships
                                 run = False
 
@@ -366,6 +374,13 @@ def play_game(screen):
     # explosion sound
     explosion_audio = pygame.mixer.Sound("./audio/explosion.mp3")
 
+    # transposes the ships rects to the other grid
+    for i in range(5):
+        ship_pos_1 = ships_p1[1][i].center
+        ships_p1[1][i].center = (ship_pos_1[0] + 750, ship_pos_1[1])
+        ship_pos_2 = ships_p2[1][i].center
+        ships_p2[1][i].center = (ship_pos_2[0] - 750, ship_pos_2[1])
+
     # game loop
     run = True
     while run:
@@ -391,6 +406,13 @@ def play_game(screen):
         # blits the number of moves for both players
         screen.blit(moves_p1, (40, 664))
         screen.blit(moves_p2, (1500 - (moves_p2.get_width() + 40), 664))
+
+        # blits ships if they are sunk
+        for i in range(5):
+            if ships_p1[4][i] == True:
+                screen.blit(ships_p1[0][i], ships_p1[1][i])
+            if ships_p2[4][i] == True:
+                screen.blit(ships_p2[0][i], ships_p2[1][i])
 
         # adds torpedo
         show_torpedo(screen)
@@ -440,6 +462,7 @@ def play_game(screen):
                         # converts mouse position as coordinates of a matrix
                         coord = mouse_to_coord(pos, grid)
                         updated = update_matrix(coord, mat)
+                        show_if_sunk()
                         if updated:
                             if who:
                                 # checks if against computer and tells it to play
@@ -462,8 +485,9 @@ def play_game(screen):
                         # checks if computer should play
                         # need to rewrite code as this part is only triggered if mouse button is pressed and we want the computer to play directly after player 1
                         if computer_plays:
-                            coord = bot.guess(p1)
+                            coord = bot.guess(p1, ships_p1)
                             update_matrix(coord, p1)
+                            show_if_sunk()
                             if if_won():
                                 gameover = True
                             else:
@@ -529,7 +553,7 @@ def validate(ships, grid):
         valid (bool)
     """
 
-    global p1, p2, who
+    global p1, p2, who, ship_coord_1, ship_coord_2
     valid = True
 
     # runs through all the ships and checks if it is contained in grid
@@ -559,8 +583,10 @@ def validate(ships, grid):
             # resets players matrix as blank
             if who:
                 p1 = [["----" for x in range(10)] for x in range(10)]
+                ship_coord_1 = [[] for x in range(5)]
             else:
                 p2 = [["----" for x in range(10)] for x in range(10)]
+                ship_coord_2 = [[] for x in range(5)]
             valid = False
             print("Some ships are overlapping")
     else:
@@ -571,20 +597,22 @@ def validate(ships, grid):
 
 def to_mat(ships, grid):
     """
-    Takes all ships position and converts them to matrix coordinates.
+    Takes all ships position then adds them to the player's matrix and stores all the ship's coords.
 
     Parameters:
         ships (list): Ship data.
         grid (Rect): Rect of grid.
     """
 
-    global p1, p2, who
+    global p1, p2, who, ship_coord_1, ship_coord_2
 
     # determines which matrix is being changed
     if who:
         mat = p1
+        ship_coord = ship_coord_1
     else:
         mat = p2
+        ship_coord = ship_coord_2
 
     g_x = grid.left
     g_y = grid.top
@@ -604,25 +632,47 @@ def to_mat(ships, grid):
             if rotated:
                 coord_x = (x - g_x) // 60 - 1
                 coord_y = (y - g_y) // 60
+                # stores it in the matrix
                 mat[coord_x][coord_y] = "ship"
                 mat[coord_x + 1][coord_y] = "ship"
+                # stores the ship's coord
+                ship_coord[i] = [(coord_x, coord_y), (coord_x + 1, coord_y)]
             else:
                 coord_x = (x - g_x) // 60
                 coord_y = (y - g_y) // 60 - 1
+                # stores it in the matrix
                 mat[coord_x][coord_y] = "ship"
                 mat[coord_x][coord_y + 1] = "ship"
+                # stores the ship's coord
+                ship_coord[i] = [(coord_x, coord_y), (coord_x, coord_y + 1)]
+
         # for cruiser and submarine (3 long)
         elif i == 1 or i == 2:
             coord_x = (x - g_x) // 60
             coord_y = (y - g_y) // 60
             if rotated:
+                # stores it in the matrix
                 mat[coord_x - 1][coord_y] = "ship"
                 mat[coord_x][coord_y] = "ship"
                 mat[coord_x + 1][coord_y] = "ship"
+                # stores the ship's coord
+                ship_coord[i] = [
+                    (coord_x - 1, coord_y),
+                    (coord_x, coord_y),
+                    (coord_x + 1, coord_y),
+                ]
             else:
+                # stores it in the matrix
                 mat[coord_x][coord_y - 1] = "ship"
                 mat[coord_x][coord_y] = "ship"
                 mat[coord_x][coord_y + 1] = "ship"
+                # stores the ship's coord
+                ship_coord[i] = [
+                    (coord_x, coord_y - 1),
+                    (coord_x, coord_y),
+                    (coord_x, coord_y + 1),
+                ]
+
         # for battleship (4 long)
         elif i == 3:
             if rotated:
@@ -630,38 +680,81 @@ def to_mat(ships, grid):
                 coord_y = (y - g_y) // 60
                 # checks if the battleship (4 long) is longer to the right or left
                 if (ships_p1[3][3] - 1) % 2 == 0:
+                    # stores it in the matrix
                     mat[coord_x - 1][coord_y] = "ship"
                     mat[coord_x][coord_y] = "ship"
                     mat[coord_x + 1][coord_y] = "ship"
                     mat[coord_x + 2][coord_y] = "ship"
+                    # stores the ship's coord
+                    ship_coord[i] = [
+                        (coord_x - 1, coord_y),
+                        (coord_x, coord_y),
+                        (coord_x + 1, coord_y),
+                        (coord_x + 2, coord_y),
+                    ]
                 else:
+                    # stores it in the matrix
                     mat[coord_x - 2][coord_y] = "ship"
                     mat[coord_x - 1][coord_y] = "ship"
                     mat[coord_x][coord_y] = "ship"
                     mat[coord_x + 1][coord_y] = "ship"
+                    # stores the ship's coord
+                    ship_coord[i] = [
+                        (coord_x - 2, coord_y),
+                        (coord_x - 1, coord_y),
+                        (coord_x, coord_y),
+                        (coord_x + 1, coord_y),
+                    ]
             else:
                 coord_x = (x - g_x) // 60
                 coord_y = (y - g_y) // 60 - 1
+                # stores it in the matrix
                 mat[coord_x][coord_y - 1] = "ship"
                 mat[coord_x][coord_y] = "ship"
                 mat[coord_x][coord_y + 1] = "ship"
                 mat[coord_x][coord_y + 2] = "ship"
+                # stores the ship's coord
+                ship_coord[i] = [
+                    (coord_x, coord_y - 1),
+                    (coord_x, coord_y),
+                    (coord_x, coord_y + 1),
+                    (coord_x, coord_y + 2),
+                ]
+
         # for carrier (5 long)
         elif i == 4:
             coord_x = (x - g_x) // 60
             coord_y = (y - g_y) // 60
             if rotated:
+                # stores it in the matrix
                 mat[coord_x - 2][coord_y] = "ship"
                 mat[coord_x - 1][coord_y] = "ship"
                 mat[coord_x][coord_y] = "ship"
                 mat[coord_x + 1][coord_y] = "ship"
                 mat[coord_x + 2][coord_y] = "ship"
+                # stores the ship's coord
+                ship_coord[i] = [
+                    (coord_x - 2, coord_y),
+                    (coord_x - 1, coord_y),
+                    (coord_x, coord_y),
+                    (coord_x + 1, coord_y),
+                    (coord_x + 2, coord_y),
+                ]
             else:
+                # stores it in the matrix
                 mat[coord_x][coord_y - 2] = "ship"
                 mat[coord_x][coord_y - 1] = "ship"
                 mat[coord_x][coord_y] = "ship"
                 mat[coord_x][coord_y + 1] = "ship"
                 mat[coord_x][coord_y + 2] = "ship"
+                # stores the ship's coord
+                ship_coord[i] = [
+                    (coord_x, coord_y - 2),
+                    (coord_x, coord_y - 1),
+                    (coord_x, coord_y),
+                    (coord_x, coord_y + 1),
+                    (coord_x, coord_y + 2),
+                ]
 
 
 def num_of(a, mat):
@@ -834,6 +927,27 @@ def show_if_hit(screen, grid_p1, grid_p2):
                 )
 
 
+def show_if_sunk():
+    global who, p1, p2, ships_p1, ships_p2, ship_coord_1, ship_coord_2
+
+    for i in range(5):
+        counter_1 = 0
+        counter_2 = 0
+
+        # checks if ship is sunk
+        for j in range(len(ship_coord_1[i])):
+            if p1[ship_coord_1[i][j][0]][ship_coord_1[i][j][1]] == "hit-":
+                counter_1 += 1
+            if p2[ship_coord_2[i][j][0]][ship_coord_2[i][j][1]] == "hit-":
+                counter_2 += 1
+
+        # updates the ships status
+        if counter_1 == len(ship_coord_1[i]):
+            ships_p1[4][i] = True
+        if counter_2 == len(ship_coord_2[i]):
+            ships_p2[4][i] = True
+
+
 def show_torpedo(screen):
     """
     Blits a torpedo on `screen` to show who's turn it is
@@ -994,7 +1108,7 @@ def main():
     # sets cursor to false
     pygame.mouse.set_visible(False)
 
-    init(screen, False, size, ("./audio/0.mp3", 0.05, 0))
+    init(screen, True, size, ("./audio/0.mp3", 0.05, 0))
 
 
 if __name__ == "__main__":
