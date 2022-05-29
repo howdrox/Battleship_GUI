@@ -37,9 +37,6 @@ def guess(mat, ships_p1, ship_coords):
         heat_map[coord[0]][coord[1]] = 0
     show_mat(heat_map)
     x, y = max_coord(heat_map)
-    print(f"Guess is {x}, {y}")
-    print(hit_ships)
-    print(sunk_ships)
 
     return (x, y)
 
