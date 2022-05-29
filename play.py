@@ -349,7 +349,7 @@ def play_game(screen):
     # ship data
     global ships_p1, ships_p2
     # game data
-    global p1, p2, who, still_running, gameover, FPS, clock
+    global p1, p2, who, still_running, gameover, FPS, clock, ship_coord_1
     # audio
     global explosion_audio
 
@@ -485,7 +485,8 @@ def play_game(screen):
                         # checks if computer should play
                         # need to rewrite code as this part is only triggered if mouse button is pressed and we want the computer to play directly after player 1
                         if computer_plays:
-                            coord = bot.guess(p1, ships_p1)
+                            print(ship_coord_1)
+                            coord = bot.guess(p1, ships_p1, ship_coord_1)
                             update_matrix(coord, p1)
                             show_if_sunk()
                             if if_won():
