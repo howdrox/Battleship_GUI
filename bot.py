@@ -366,6 +366,8 @@ def check_if_ship(mat, coord, l, rotated):
     """
     Checks if ship does not overlap another previously place ship.
 
+    We cannot use the function `available()` as it checks for hits or misses but we want to know if there is a ship there.
+
     Parameters:
         mat (list[list[str]]): Matrix.
         coord (tuple[int, int]): Coordinate.
@@ -375,6 +377,7 @@ def check_if_ship(mat, coord, l, rotated):
     Returns:
         if_ship (bool): If there is a ship already there.
     """
+
     if_ship = False
     x, y = coord
 

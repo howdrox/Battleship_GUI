@@ -791,6 +791,10 @@ def show_error(screen):
 
     global error_img, error_img_2, error_img_3, SIZE
 
+    # error sound
+    error_audio = pygame.mixer.Sound("./audio/error.mp3")
+
+    error_audio.play()
     screen.blit(
         error_img,
         (SIZE[0] / 2 - 1000 / 2, SIZE[1] / 2 - 600 / 2),
@@ -798,6 +802,7 @@ def show_error(screen):
     pygame.display.update()
     pygame.time.wait(150)
 
+    error_audio.play()
     screen.blit(
         error_img_2,
         (
@@ -808,6 +813,7 @@ def show_error(screen):
     pygame.display.update()
     pygame.time.wait(150)
 
+    error_audio.play()
     screen.blit(
         error_img_3,
         (
