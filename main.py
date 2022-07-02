@@ -3,8 +3,6 @@ import pygame
 from pygame import mixer
 import play
 
-# comment
-
 
 def main():
     # -------------------------------------Initialisation -----------------------------------------------------------------------------
